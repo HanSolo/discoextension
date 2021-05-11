@@ -3,7 +3,7 @@
     "displayName": "disco",
     "description": "",
     "version": "1.0.0",
-    "publisher": "vsciot-vscode",
+    "publisher": "GerritGrunwald",
     "engines": {
         "vscode": "^1.23.0"
     },
@@ -48,5 +48,6 @@
     "license": "Apache 2.0",
     "bugs": {
         "url": "https://github.com/HanSolo/discoextension/issues"
-    }
+    },
+    "icon": "https://github.com/HanSolo/discoextension/discoduke.png"
 }
