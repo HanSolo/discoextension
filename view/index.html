@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JDK Selector</title>
+    <link rel="stylesheet" type="text/css" href="./css/styles.css" media="screen"/>
+</head>
+<body>
+<div class="container">
+    <div class="top-container">
+      <h1 id="main-header" class="main-header">Discover builds of Open JDK</h1>
+    </div>
+    
+    <div class="tab-wrap">
+        <input type="radio" id="tab1" name="tabGroup1" class="tab" checked>
+        <label for="tab1">Quick</label>
+
+        <input type="radio" id="tab2" name="tabGroup1" class="tab">
+        <label for="tab2">Drill down by version</label>
+
+        <input type="radio" id="tab3" name="tabGroup1" class="tab">
+        <label for="tab3">Drill down by distribution</label>
+        
+        <input type="radio" id="tab4" name="tabGroup1" class="tab">
+        <label for="tab4">Detailed</label>
+
+        <!-- Quick tab -->
+        <div class="tab__content">
+            <h3 class="sub-header">Download</h3>
+            <div class="left-container">
+              <label id="info-label" class="small-label">To download and install a JDK, please select a JDK and press the download area</label>
+            </div>
+            <div id="panel1" class="panel">
+                <div>
+                    <div class="left-container">
+                        <label id="os-label" class="small-label">Download for </label>
+                    </div>
+                    <div id="jdk-selectors"></div>
+                    <div class="left-container">
+                        <label id="distribution-label" class="distribution-label" onclick="showDistributionDialog()" title="-">Distribution</label>
+                    </div>
+                    <div class="left-container"></div>
+                    <a id="dl-a">
+                      <div id="download-area" name="downloadArea" class="download-area" onclick="downloadPackage()" data-status="-1">
+                          <div class="centered-container">
+                              <label id="download-label" class="download-label" data-status="-1">Download</label>
+                          </div>
+                          <div class="centered-container">
+                              <label id="version-number-label" data-status="-1" class="version-number-label">-</label>
+                              <select id="archive-type-dropdown" name="archive-type" class="archive-type-dropdown" data-status="-1" onclick="event.stopPropagation()" onchange="updateSelectedPackage()"></select>
+                          </div>
+                          <div class="centered-container">
+                              <label id="filename-label" data-status="-1">-</label>
+                          </div>
+                          <div class="centered-container">
+                              <div id="progress-bar" style="visibility:hidden">
+                                  <div id="progress"></div>
+                              </div>
+                          </div>
+                      </div>   
+                    </a>                 
+                    <label class="small-gray-label">When you are finished, please reload Visual Studio Code to make it effective.</label>
+                  </div>                
+            </div>
+            <iframe id="dl-frame" style="display:none;"></iframe>
+        </div>
+
+        <!-- Drill down on version tab -->
+        <div class="tab__content">
+          <h3 class="sub-header">Download</h3>
+          <div class="left-container">
+            <label class="small-label">To download and install a JDK, please select a MajorVersion, a distribution an archive type and press the download area</label>
+          </div>
+          <div id="panel2" class="panel">
+              <div>
+                  <div class="left-container">
+                      <label id="dd-os-label" class="small-label">Download for </label>
+                  </div>
+                  
+                  <!-- Drill Down on version area-->
+                  <div class="hbox top">
+                    <div id="dd-jdk-selectors">
+                      <div id="dd-jdk-selectors-left"></div>
+                      <div id="dd-jdk-selectors-right"></div>
+                    </div>
+                    <div id="drill-down-selector" style="display:none">
+                      <label class="small-label">Details</label>
+                      <input id="checkbox" type="checkbox" onchange="showHideDrillDownVersions()">
+                    </div>
+                    <div id="drill-down-versions" style="padding-left:20px; display:none">
+                      <label id="dd-version-dropdown-label" class="small-label">Version</label>
+                      <select id="dd-version-dropdown" name="version" class="dd-dropdown" onchange="showHideDrillDownDistros()"></select>
+                    </div>
+                    <div id="drill-down-distros" style="padding-left:20px; display:none">
+                      <label id="dd-distro-dropdown-label" class="small-label">Distribution</label>
+                      <select id="dd-distro-dropdown" name="distro" class="dd-dropdown" onchange="showHideDrillDownOperatingSystems()"></select>
+                    </div>
+                    <div id="drill-down-os" style="padding-left:20px; display:none">
+                      <label id="dd-os-dropdown-label" class="small-label">OS</label>
+                      <select id="dd-os-dropdown" name="os" class="dd-dropdown" onchange="showHideDrillDownArchitectures()"></select>
+                    </div>
+                    <div id="drill-down-arc" style="padding-left:20px; display:none">
+                      <label id="dd-arc-dropdown-label" class="small-label">Architecture</label>
+                      <select id="dd-arc-dropdown" name="arc" class="dd-dropdown" onchange="showHideDrillDownArchiveTypes()"></select>
+                    </div>
+                    <div id="drill-down-archive-types" style="padding-left:20px; display:none">
+                      <label  id="dd-archive-type-dropdown-label" class="small-label">Archive Type</label>
+                      <select id="dd-archive-type-dropdown" name="archive-type" class="dd-dropdown" onchange="updateDrillDownDownload()"></select>
+                    </div>
+                  </div>
+
+                  <div class="left-container"></div>
+                  <a id="dd-dl-a">
+                    <div id="dd-download-area" name="dd-downloadArea" class="download-area" onclick="drillDownDownloadPackage()" data-status="-1">
+                        <div class="centered-container">
+                            <label id="dd-download-label" class="download-label" data-status="-1">Download</label>
+                        </div>
+                        <div class="centered-container">
+                            <label id="dd-version-number-label" data-status="-1">-</label>
+                        </div>
+                        <div class="centered-container">
+                            <label id="dd-filename-label" data-status="-1">-</label>
+                        </div>                      
+                    </div>
+                  </a>
+                  <label class="small-gray-label">Please manually install the downloaded JDK.</label>
+                </div>                
+          </div>
+          <iframe id="dd-dl-frame" style="display:none;"></iframe>
+        </div>
+
+        <!-- Drill down on distribution tab -->
+        <div class="tab__content">
+        <h3 class="sub-header">Download</h3>
+        <div class="left-container">
+          <label class="small-label">To download and install a JDK, please select a distribution, a major_version, a version, an archive type and press the download area</label>
+        </div>
+        <div id="panel3" class="panel">
+            <div>
+                <div class="left-container">
+                    <label id="ddd-os-label" class="small-label">Download for </label>
+                </div>
+                
+                <!-- Drill Down on distribution area-->
+                <div class="hbox top">
+                  <div id="ddd-distro-selectors">
+                    <div id="ddd-distro-selectors-left"></div>
+                    <div id="ddd-distro-selectors-middle"></div>
+                    <div id="ddd-distro-selectors-right"></div>
+                  </div>
+                  <div id="drill-down-distribution-major_versions" style="padding-left:20px; display:none">
+                    <label id="ddd-major_version-dropdown-label" class="small-label">MajorVersion</label>
+                    <select id="ddd-major_version-dropdown" name="major_version" class="ddd-dropdown" onchange="showHideDrillDownDistributionVersions()"></select>
+                  </div>
+                  <div id="drill-down-distribution-versions" style="padding-left:20px; display:none">
+                    <label id="ddd-version-dropdown-label" class="small-label">Version</label>
+                    <select id="ddd-version-dropdown" name="version" class="ddd-dropdown" onchange="showHideDrillDownDistributionOperatingSystems()"></select>
+                  </div>
+                  <div id="drill-down-distribution-operating-systems" style="padding-left:20px; display:none">
+                    <label  id="ddd-operating-system-dropdown-label" class="small-label">OS</label>
+                    <select id="ddd-operating-system-dropdown" name="archive-type" class="ddd-dropdown" onchange="showHideDrillDownDistributionArchitectures()"></select>
+                  </div>
+                  <div id="drill-down-distribution-architectures" style="padding-left:20px; display:none">
+                    <label  id="ddd-arc-dropdown-label" class="small-label">Architecture</label>
+                    <select id="ddd-arc-dropdown" name="architecture" class="ddd-dropdown" onchange="showHideDrillDownDistributionArchiveTypes()"></select>
+                  </div>
+                  <div id="drill-down-distribution-archive-types" style="padding-left:20px; display:none">
+                    <label  id="ddd-archive-type-dropdown-label" class="small-label">Archive Type</label>
+                    <select id="ddd-archive-type-dropdown" name="archive-type" class="ddd-dropdown" onchange="updateDrillDownDistributionDownload()"></select>
+                  </div>
+                </div>
+
+                <div class="left-container"></div>
+                <a id="ddd-dl-a">
+                  <div id="ddd-download-area" name="ddd-downloadArea" class="download-area" onclick="drillDownDistributionDownloadPackage()" data-status="-1">
+                      <div class="centered-container">
+                          <label id="ddd-download-label" class="download-label" data-status="-1">Download</label>
+                      </div>
+                      <div class="centered-container">
+                          <label id="ddd-version-number-label" data-status="-1">-</label>
+                      </div>
+                      <div class="centered-container">
+                          <label id="ddd-filename-label" data-status="-1">-</label>
+                      </div>                      
+                  </div>
+                </a>
+                <label class="small-gray-label">Please manually install the downloaded JDK.</label>
+              </div>                
+        </div>
+        <iframe id="ddd-dl-frame" style="display:none;"></iframe>
+        </div>
+
+        <!-- Detailled tab -->
+        <div class="tab__content">
+            <h3>Download</h3>
+            <div class="left-container">
+              <label class="small-label">To download and install a JDK, please select a JDK and press the download button</label>
+            </div>
+            <div id="panel4" class="panel">
+                <select id="major_version-dropdown-detailed" class="detailed-dropdown" name="version" onchange="updatePackageList()"></select>
+                <select id="distro-dropdown-detailed" class="detailed-dropdown" name="distro" style="margin-left:30px;" onchange="updatePackageList()"></select>
+                <select id="package-type-dropdown-detailed" class="detailed-dropdown" name="package-type" style="margin-left:30px;" onchange="updatePackageList()"></select>
+                <select id="operating-system-dropdown-detailed" class="detailed-dropdown" name="operating-system" style="margin-left:30px;" onchange="updatePackageList()"></select>
+                <select id="architecture-dropdown-detailed" class="detailed-dropdown" name="architecture" style="margin-left:30px;" onchange="updatePackageList()"></select>
+                <select id="archive-type-dropdown-detailed" class="detailed-dropdown" name="archive-type" style="margin-left:30px;" onchange="updatePackageList()"></select>
+                <label class="small-label" style="margin-left:30px;">Incl. Early Access</label>
+                <input id="ea_checkbox" type="checkbox" onchange="updatePackageList()" checked=true>
+                <div class="scroll">
+                  <ul id="package-list"></ul>
+                </div>
+                
+                <a id="detailed-dl-a">
+                  <div id="detailed-download-area" name="detailed-downloadArea" class="detailed-download-area" onclick="downloadSelectedPackage()">
+                    <div class="centered-container">
+                      <label id="detailed-download-label" class="download-label">Download</label>
+                    </div>
+                  </div>
+                </a>
+                
+            </div>            
+        </div>
+    </div>
+    
+    <!-- Dialog -->
+    <dialog id="dialog" role="dialog" aria-labelledby="dialog-heading">
+        <h2 id="dialog-heading" class="dialog-title">Distribution</h2>
+        <p class="dialog-text">Select distribution</p>
+        <select id="distro-dropdown" name="distro" class="dialog-dropdown" onchange="selectDistribution()"></select>
+        <button id="close-dialog" class="dialog-close-button" onclick="closeDistributionDialog()">Close</button>
+    </dialog>
+
+</div>
+
+
+<script>
+  class PackageInfo {
+    constructor(id, filename, versionNumber, directly_downloadable) {
+      this.id                     = id;
+      this.filename               = filename;      
+      this.versionNumber          = versionNumber;
+      this.directly_downloadable  = directly_downloadable;
+    }
+  }
+
+  const baseUrl = 'https://api.foojay.io';
+
+  var selectedFeatureVersion;
+  var major_version8;
+  var latestLts;
+  var current;
+  var packageMap;
+  var packagesFound8;
+  var packagesFoundLastLts;
+  var packagesFoundCurrent;
+  
+  var selectedDrillDownFeatureVersion;
+  var drillDownPackageMap;
+  var drillDownPackagesFoundMap;
+
+  var selectedDrillDownDistribution;
+
+  init();
+
+  
+  const callbackStack = [];
+  const vscode        = acquireVsCodeApi();
+
+  function command(cmd, callback) {
+    if (!cmd) {
+      return;
+    }
+    let args = Array.from(arguments);
+    if (typeof args[args.length - 1] === 'function') {
+      callback = args[args.length - 1];
+      args.length = args.length - 1;
+    } else {
+      callback = undefined;
+    }
+    args.shift();
+    const messageId = new Date().getTime() + Math.random();
+
+    callbackStack.push({
+                         messageId,
+                         callback
+                       });
+    vscode.postMessage({
+                         messageId,
+                         command: cmd,
+                         parameter: args
+                       });
+  }
+
+  window.addEventListener('message', event => {
+    const message = event.data;
+    for (let index = 0; index < callbackStack.length; index++) {
+      const callbackItem = callbackStack[index];
+      if (callbackItem.messageId === message.messageId) {
+        if (callbackItem.callback) {
+          callbackItem.callback(message.payload);
+        }
+        callbackStack.splice(index, 1);
+        break;
+      }
+    }
+  });
+
+  function showDisco() {
+    command('extension.disco');
+  }
+
+  function closeTab() {
+    command('extension.vscexpressclose', 'index.html');
+  }
+  
+
+  
+  function init() {
+    let osLabel = document.getElementById('os-label');
+    osLabel.innerText = 'Download for ' + getOperatingSystem();
+
+    let drillDownOsLabel = document.getElementById('dd-os-label');
+    drillDownOsLabel.innerText = 'Download for ' + getOperatingSystem();
+
+    major_version8         = getMajorVersion('8');
+    latestLts = getMajorVersion('latest_lts');
+    current   = getMajorVersion('latest');
+
+    packagesFound8       = [];
+    packagesFoundLastLts = [];
+    packagesFoundCurrent = [];
+    packageMap           = new Map();
+
+    drillDownPackagesFoundMap = new Map();
+    drillDownPackageMap       = new Map();
+
+    initJdkSelectors();
+    initDistros();
+    registerListeners();
+
+    initDrillDownJdkSelectors();
+
+    initDrillDownDistributionSelectors();
+
+    initMajorVersionsDetailed(latestLts);
+
+    initDistrosDetailed();
+
+    initPackageTypesDetailed();
+    initOperatingSystemsDetailed();
+    initArchiveTypesDetailed();
+  }
+
+
+
+  // ******************** Quick JDK Selector **********************************
+  async function initJdkSelectors() {
+    let r8Json        = await getMajorVersion('8');
+    let latestLtsJson = await getMajorVersion('latest_lts');
+    let currentJson   = await getMajorVersion('latest_ga');
+
+    major_version8 = JSON.parse(r8Json);
+    latestLts      = JSON.parse(latestLtsJson).result[0];
+    current        = JSON.parse(currentJson).result[0];
+
+    let jdkSelectors = document.getElementById('jdk-selectors');
+
+    // Add JDK 8 RadioButton
+    var div8 = document.createElement('div');
+    div8.className = "left-container";
+
+    var input8 = document.createElement('input');
+    input8.type     = 'radio';
+    input8.id       = 'jdk8';
+    input8.name     = 'JDK';
+    input8.value    = '8';
+    input8.onchange = function() { updateDownloadArea(8); };
+    div8.appendChild(input8);
+
+    var label8 = document.createElement('label');
+    label8.id        = 'jdk-selector-label-8';
+    label8.for       = "jdk8"
+    label8.className = 'jdk-selector';
+    label8.innerText = ' OpenJDK 8';
+    label8.title     = '';
+    div8.appendChild(label8);
+
+    jdkSelectors.appendChild(div8);
+
+    // Add Latest LTS JDK RadioButton
+    var divLatestLts = document.createElement('div');
+    divLatestLts.className = "left-container";
+
+    var inputLatestLts = document.createElement('input');
+    inputLatestLts.type     = 'radio';
+    inputLatestLts.id       = 'jdk' + latestLts.major_version;
+    inputLatestLts.name     = 'JDK';
+    inputLatestLts.value    = latestLts.major_version;
+    inputLatestLts.onchange = function() { updateDownloadArea(latestLts.major_version); };
+    divLatestLts.appendChild(inputLatestLts);
+
+    var labelLatestLts = document.createElement('label');
+    labelLatestLts.id        = 'jdk-selector-label-latest';
+    labelLatestLts.for       = "jdk" + latestLts.major_version;
+    labelLatestLts.className = 'jdk-selector';
+    labelLatestLts.innerText = ' OpenJDK ' + latestLts.major_version;
+    labelLatestLts.title     = '';
+    divLatestLts.appendChild(labelLatestLts);
+
+    jdkSelectors.appendChild(divLatestLts);
+
+    // Add Current JDK RadioButton
+    var divCurrent = document.createElement('div');
+    divCurrent.className = "left-container";
+
+    var inputCurrent = document.createElement('input');
+    inputCurrent.type     = 'radio';
+    inputCurrent.id       = 'jdk' + current.major_version;
+    inputCurrent.name     = 'JDK';
+    inputCurrent.value    = current.major_version;
+    inputCurrent.onchange = function() { updateDownloadArea(current.major_version); };
+    divCurrent.appendChild(inputCurrent);
+
+    var labelCurrent = document.createElement('label');
+    labelCurrent.id        = 'jdk-selector-label-current';
+    labelCurrent.for       = "jdk" + current.major_version;
+    labelCurrent.className = 'jdk-selector';
+    labelCurrent.innerText = ' OpenJDK ' + current.major_version;
+    labelCurrent.title     = '';
+    divCurrent.appendChild(labelCurrent);
+
+    jdkSelectors.appendChild(divCurrent);
+
+    updatePackageMap("zulu", [8, latestLts.major_version, current.major_version]);
+  }
+
+  async function initDistros() {
+    let distroDropdown = document.getElementById('distro-dropdown');
+    distroDropdown.length = 0;
+
+    let distributionsJson = await getDistributions();
+    let resultJson        = JSON.parse(distributionsJson);
+    let distributions     = resultJson.result;
+
+    for (let i = 0; i < distributions.length; i++) {
+      let d = distributions[i];
+      option = document.createElement('option');
+      option.id    = d.name;
+      option.text  = d.name;
+      option.value = d.api_parameter;
+      distroDropdown.add(option);
+    }
+    distroDropdown.selectedIndex = 0;
+  }
+
+  function registerListeners() {
+    document.getElementById("download-area").onmouseover = function(e) {
+      if (document.getElementById("version-number-label").innerText === '-') {
+        document.getElementById("download-area").setAttribute("data-status", "-1");
+        document.getElementById("download-label").setAttribute("data-status", "-1");
+        document.getElementById("version-number-label").setAttribute("data-status", "-1");
+        document.getElementById("archive-type-dropdown").setAttribute("data-status", "-1");
+        document.getElementById("filename-label").setAttribute("data-status", "-1");
+      } else {
+        document.getElementById("download-area").setAttribute("data-status", "1");
+        document.getElementById("download-label").setAttribute("data-status", "1");
+        document.getElementById("version-number-label").setAttribute("data-status", "1");
+        document.getElementById("archive-type-dropdown").setAttribute("data-status", "1");
+        document.getElementById("filename-label").setAttribute("data-status", "1");
+      }
+    }
+    document.getElementById("download-area").onmouseout = function(e) {
+      if (document.getElementById("version-number-label").innerText === '-') {
+        document.getElementById("download-area").setAttribute("data-status", "-1");
+        document.getElementById("download-label").setAttribute("data-status", "-1");
+        document.getElementById("version-number-label").setAttribute("data-status", "-1");
+        document.getElementById("archive-type-dropdown").setAttribute("data-status", "-1");
+        document.getElementById("filename-label").setAttribute("data-status", "-1");
+      } else {
+        document.getElementById("download-area").setAttribute("data-status", "0");
+        document.getElementById("download-label").setAttribute("data-status", "0");
+        document.getElementById("version-number-label").setAttribute("data-status", "0");
+        document.getElementById("archive-type-dropdown").setAttribute("data-status", "0");
+        document.getElementById("filename-label").setAttribute("data-status", "0");
+      }
+    }
+  }
+
+  function updateDownloadArea(featureVersion) {
+    if (null == featureVersion || undefined === featureVersion || !packageMap.has(featureVersion)) { return; }
+    selectedFeatureVersion = featureVersion;
+
+    let selectedPackages;
+    if (8 === featureVersion) {
+      selectedPackages = packagesFound8;
+    } else if (latestLts.major_version === featureVersion) {
+      selectedPackages = packagesFoundLastLts;
+    } else if (current.major_version === featureVersion) {
+      selectedPackages = packagesFoundCurrent;
+    }
+    let archiveTypeDropdown = document.getElementById("archive-type-dropdown");
+    while(archiveTypeDropdown.firstChild) {
+      archiveTypeDropdown.removeChild(archiveTypeDropdown.firstChild);
+    }
+
+    for (let i = 0; i < selectedPackages.length; i++) {      
+      option       = document.createElement('option');
+      option.id    = selectedPackages[i].id;
+      option.text  = selectedPackages[i].archive_type;
+      option.value = selectedPackages[i].archive_type;
+      var entryExists = false;
+      for (var opt of archiveTypeDropdown.options) {
+        if (opt.value === option.value) {
+          entryExists = true;
+          break;
+        }
+      }
+      if (!entryExists) {
+        archiveTypeDropdown.add(option);
+      }
+    }
+    archiveTypeDropdown.selectedIndex = 0;
+
+    document.getElementById("download-area").setAttribute("data-status", "0");
+    document.getElementById("download-label").setAttribute("data-status", "0");
+    document.getElementById("version-number-label").setAttribute("data-status", "0");
+    document.getElementById("version-number-label").innerText = packageMap.get(featureVersion).versionNumber;
+    document.getElementById("archive-type-dropdown").setAttribute("data-status", "0");
+    document.getElementById("filename-label").setAttribute("data-status", "0");
+    document.getElementById("filename-label").innerText = packageMap.get(featureVersion).filename;
+  }
+
+  function updateSelectedPackage() {
+    
+    let archiveTypeDropdown = document.getElementById("archive-type-dropdown");
+    let package           = null;
+    let packageInfo       = null;
+    if (selectedFeatureVersion === 8) {      
+      package     = packagesFound8.find(package => package.archive_type.toString() == archiveTypeDropdown.value.toString());
+      packageInfo = new PackageInfo(package.id, package.filename, package.java_version);
+      packageMap.set(selectedFeatureVersion, packageInfo);      
+    } else if (selectedFeatureVersion === latestLts.major_version) {
+      package     = packagesFoundLastLts.find(package => package.archive_type.toString() == archiveTypeDropdown.value.toString());
+      packageInfo = new PackageInfo(package.id, package.filename, package.java_version);
+      packageMap.set(selectedFeatureVersion, packageInfo);      
+    } else if (selectedFeatureVersion === current.major_version) {
+      package     = packagesFoundCurrent.find(package => package.archive_type.toString() == archiveTypeDropdown.value.toString());
+      packageInfo = new PackageInfo(package.id, package.filename, package.java_version);
+      packageMap.set(selectedFeatureVersion, packageInfo);      
+    }
+    
+    if (null != package) {
+      document.getElementById("version-number-label").innerText = packageMap.get(selectedFeatureVersion).versionNumber;
+      document.getElementById("filename-label").innerText = packageMap.get(selectedFeatureVersion).filename;
+    }    
+  }
+
+  async function downloadPackage() {
+    let featureVersion = undefined;
+    if (document.getElementById("jdk8").checked) {
+      featureVersion = 8;
+    } else if (document.getElementById('jdk' + latestLts.major_version).checked) {
+      featureVersion = latestLts.major_version;
+    } else if (document.getElementById('jdk' + current.major_version).checked) {
+      featureVersion = current.major_version;
+    }
+
+    if (undefined == featureVersion || null == featureVersion || !packageMap.has(featureVersion)) { return; }
+  
+    let downloadLink = await getDownloadLink(packageMap.get(featureVersion).id, packageMap.get(featureVersion).directly_downloadable);
+
+    if (packageMap.get(featureVersion).directly_downloadable) {
+      let a = document.getElementById('dl-a');
+      a.href='';      
+      downloadFile1(downloadLink);
+    } else {
+      openDownloadLinkInBrowser(downloadLink);
+    }
+  }
+
+  async function updatePackageMap(distribution, major_versions) {
+    packagesFound8       = [];
+    packagesFoundLastLts = [];
+    packagesFoundCurrent = [];
+    packageMap.clear();
+
+    let operatingSystem = getOperatingSystem();
+
+    // Get the package information
+    for (let i = 0 ; i < major_versions.length ; i++) {
+      let featureVersion = major_versions[i];
+      let packageUrl     = baseUrl + '/disco/v2.0/packages' + '?version=' + featureVersion + '&distro=' + distribution + '&operating_system=' + operatingSystem + '&architecture=x64' + '&latest=overall' + '&package_type=jdk' + '&release_status=ga&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
+      
+      let packagesJson = await getPackages(packageUrl);
+      const data = JSON.parse(packagesJson).result;
+
+      if (data.length > 0) {
+        let packageInfo = new PackageInfo(data[0].id, data[0].filename, data[0].java_version, data[0].directly_downloadable);
+        packageMap.set(featureVersion, packageInfo);
+        switch(featureVersion) {
+          case 8: 
+            document.getElementById("jdk8").disabled = false; 
+            document.getElementById('jdk-selector-label-8').title = '';
+            for (let j = 0 ; j < data.length ; j++) {
+              packagesFound8.push(data[j]);
+            }
+            break;
+          case latestLts.major_version: 
+            document.getElementById('jdk' + latestLts.major_version).disabled = false; 
+            document.getElementById('jdk-selector-label-latest').title = ''; 
+            for (let j = 0 ; j < data.length ; j++) {
+              packagesFoundLastLts.push(data[j]);
+            }
+            break;
+          case current.major_version : 
+            document.getElementById('jdk' + current.major_version).disabled = false; 
+            document.getElementById('jdk-selector-label-current').title = ''; 
+            for (let j = 0 ; j < data.length ; j++) {
+              packagesFoundCurrent.push(data[j]);
+            }
+            break;
+        }
+      } else {
+        // no packages found
+        packageMap.set(featureVersion, null);
+        switch(featureVersion) {
+          case 8: 
+            document.getElementById("jdk8").disabled = true; 
+            document.getElementById('jdk-selector-label-8').title = '   Not available for ' + getOperatingSystem(); 
+            break;
+          case latestLts.major_version: 
+            document.getElementById('jdk' + latestLts.major_version).disabled = true; 
+            document.getElementById('jdk-selector-label-latest').title = '   Not available for ' + getOperatingSystem(); 
+            break;
+          case current.major_version: 
+            document.getElementById('jdk' + current.major_version).disabled = true; 
+            document.getElementById('jdk-selector-label-current').title = '   Not available for ' + getOperatingSystem(); 
+            break;
+        }
+      }
+    }
+
+    // Disable download area with labels etc.
+    document.getElementById("download-area").setAttribute("data-status", "-1");
+    document.getElementById("download-label").setAttribute("data-status", "-1");
+    document.getElementById("version-number-label").innerText = '-';
+    document.getElementById("version-number-label").setAttribute("data-status", "-1");
+    document.getElementById("archive-type-dropdown").setAttribute("data-status", "-1");
+    document.getElementById("filename-label").innerText       = '-';
+    document.getElementById("filename-label").setAttribute("data-status", "-1");
+    document.getElementById("jdk8").checked = false;
+    document.getElementById('jdk' + latestLts.major_version).checked = false;
+    document.getElementById('jdk' + current.major_version).checked = false;
+  }
+
+  function downloadFile(url) {
+    let progress = document.getElementById("progress");
+    progress.style = "width:0%";
+
+    const request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'blob';
+    request.setRequestHeader("Content-Type", "application/octet-stream");
+
+    request.onreadystatechange = function() {
+      if (request.status === 200) {
+        console.log("downloading");
+      }
+    }
+
+    request.onprogress = function(e) {
+      progress.max   = e.total;
+      progress.value = e.loaded;
+
+      var percent_complete = (e.loaded / e.total) * 100;
+      percent_complete = Math.floor(percent_complete);
+
+      progress.style = "width=" + percent_complete + "%";
+    }
+
+    request.onerror = function() {
+      console.error('An error occurred fetching the JSON from ' + url);
+    };
+
+    request.send();
+  }
+
+  function downloadFile1(url) {        
+    document.getElementById('dl-frame').src = url;
+  }
+
+  function openDownloadLinkInBrowser(url) {    
+    let a = document.getElementById('dl-a');
+    a.href=url;
+  }
+
+  function showDistributionDialog() {
+    let dialog = document.getElementById('dialog');
+    dialog.setAttribute('open', 'open');
+    let distroDropdown = document.getElementById('distro-dropdown').selectedIndex = 0;
+  }
+
+  function selectDistribution() {
+    let distroDropdown = document.getElementById('distro-dropdown');
+    let distribution   = distroDropdown.value;
+    let major_versions = [8, latestLts.major_version, current.major_version];
+    updatePackageMap(distribution, major_versions);
+    dialog.setAttribute('open', 'close');
+  }
+
+  function closeDistributionDialog() {
+    let distroDropdown = document.getElementById('distro-dropdown');
+    distribution = distroDropdown.value;
+    let major_versions = [8, latestLts.major_version, current.major_version];
+    updatePackageMap(distribution, major_versions);
+    dialog.setAttribute('open', 'close');
+  }
+
+
+
+  // ******************** Drill down by version JDK Selector ******************
+  async function initDrillDownJdkSelectors() {
+    let   maintainedMajorVersionsJson = await getMaintainedMajorVersions();
+    const responseData                = JSON.parse(maintainedMajorVersionsJson);
+    const maintainedMajorVersions     = responseData.result;
+
+    let jdkSelectorsLeft  = document.getElementById('dd-jdk-selectors-left');
+    let jdkSelectorsRight = document.getElementById('dd-jdk-selectors-right');
+
+    for (var i = 0 ; i < maintainedMajorVersions.length ; i++) {
+      let r   = maintainedMajorVersions[i];
+      var div = document.createElement('div');
+      div.className = "left-container";
+
+      var input = document.createElement('input');
+      input.type     = 'radio';
+      input.id       = 'dd-jdk-' + r.major_version;
+      input.name     = 'JDK';
+      input.value    = r.major_version;
+      input.onchange = function() { updateDrillDownDownloadArea(document.getElementById('dd-jdk-' + r.major_version).value); };
+      div.appendChild(input);
+
+      var label = document.createElement('label');
+      label.id        = 'dd-jdk-selector-label-' + r.major_version;
+      label.for       = 'dd-jdk-' + r.major_version
+      label.className = 'jdk-selector';
+      label.innerText = ' OpenJDK ' + r.major_version;
+      label.title     = '';
+      div.appendChild(label);
+      if (i < 3) {
+        jdkSelectorsLeft.appendChild(div);
+      } else {
+        jdkSelectorsRight.appendChild(div);
+      }
+    }
+    updateDrillDownPackageMap("zulu");
+  }
+
+  function updateDrillDownDownloadArea(featureVersion) {
+    if (null == featureVersion || undefined === featureVersion) { return; }
+
+    document.getElementById('drill-down-selector').style.display = 'block';
+
+    for (var key of drillDownPackageMap.keys()) {
+      if (key == featureVersion) {
+        selectedDrillDownFeatureVersion = key;
+        break;
+      }
+    }
+
+    let selectedPackages           = drillDownPackagesFoundMap.get(selectedDrillDownFeatureVersion);
+
+    let drillDownVersionsDropdown  = document.getElementById('dd-version-dropdown');
+
+    let drillDownDistros           = document.getElementById('drill-down-distros');
+    let drillDownDistrosDropdown   = document.getElementById('dd-distro-dropdown');
+
+    let drillDownOS                = document.getElementById('drill-down-os');
+    let drillDownOSDropdown        = document.getElementById('dd-os-dropdown');
+    
+    let drillDownArc         = document.getElementById('drill-down-arc');
+    let drillDownArcDropdown       = document.getElementById('dd-arc-dropdown');
+
+    let drillDownArchiveTypes      = document.getElementById('drill-down-archive-types');
+    let drillDownExtensionDropdown = document.getElementById('dd-archive-type-dropdown');
+
+    drillDownDistros.style.display = 'none';
+    while(drillDownDistrosDropdown.firstChild) {
+      drillDownDistrosDropdown.removeChild(drillDownDistrosDropdown.firstChild);
+    }
+
+    drillDownOS.style.display = 'none';
+    while(drillDownOSDropdown.firstChild) {
+      drillDownOSDropdown.removeChild(drillDownOSDropdown.firstChild);
+    }
+
+    drillDownArc.style.display = 'none';
+    while(drillDownArcDropdown.firstchild) {
+      drillDownArcDropdown.removeChild(drillDownArcDropdown.firstChild);
+    }
+
+    drillDownArchiveTypes.style.display = 'none';
+    while(drillDownExtensionDropdown.firstChild) {
+      drillDownExtensionDropdown.removeChild(drillDownExtensionDropdown.firstChild);
+    }
+
+    showHideDrillDownVersions();
+
+    for (let i = 0; i < selectedPackages.length; i++) {
+      const option = document.createElement('option');
+      option.id    = selectedPackages[i].id;
+      option.text  = selectedPackages[i].archive_type;
+      option.value = selectedPackages[i].archive_type;
+      drillDownExtensionDropdown.add(option);
+    }
+    drillDownExtensionDropdown.selectedIndex = 0;
+
+    document.getElementById("dd-download-label").setAttribute("package-id", drillDownPackageMap.get(selectedDrillDownFeatureVersion).id)
+    document.getElementById("dd-download-area").setAttribute("data-status", "0");
+    document.getElementById("dd-download-label").setAttribute("data-status", "0");
+    document.getElementById("dd-version-number-label").setAttribute("data-status", "0");
+    document.getElementById("dd-version-number-label").innerText = drillDownPackageMap.get(selectedDrillDownFeatureVersion).versionNumber;
+    document.getElementById("dd-arc-dropdown").setAttribute("data-status", "0");
+    document.getElementById("dd-archive-type-dropdown").setAttribute("data-status", "0");
+    document.getElementById("dd-filename-label").setAttribute("data-status", "0");
+    document.getElementById("dd-filename-label").innerText = drillDownPackageMap.get(selectedDrillDownFeatureVersion).filename;
+  }
+
+  async function updateDrillDownPackageMap(drillDownDistribution) {
+    let maintainedMajorVersionsJson = await getMaintainedMajorVersions();
+    const responseData          = JSON.parse(maintainedMajorVersionsJson);
+    const maintainedMajorVersions     = responseData.result;
+
+    drillDownPackagesFoundMap.clear();
+    drillDownPackageMap.clear();
+
+    let operatingSystem = getOperatingSystem();
+
+    // Get the package information
+    for (let i = 0 ; i < maintainedMajorVersions.length ; i++) {
+      let featureVersion = maintainedMajorVersions[i].major_version;
+      let packageUrl     = baseUrl + '/disco/v2.0/packages' + '?version=' + featureVersion + '&distro=' + drillDownDistribution + '&operating_system=' + operatingSystem + '&architecture=x64' + '&latest=overall' + '&package_type=jdk' + '&release_status=ga&release_status=ea&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
+      let packagesJson   = await getPackages(packageUrl);
+      const responseData = JSON.parse(packagesJson);
+      const data         = responseData.result;
+
+      if (data.length > 0) {
+        let packageInfo = new PackageInfo(data[0].id, data[0].filename, data[0].java_version, data[0].directly_downloadable);
+        drillDownPackageMap.set(featureVersion, packageInfo);
+        document.getElementById('dd-jdk-' + featureVersion).disabled = false;
+        document.getElementById('dd-jdk-selector-label-' + featureVersion).title = '';
+        let drillDownPackagesFoundForFeatureVersion = [];
+        for (let j = 0 ; j < data.length ; j++) {
+          drillDownPackagesFoundForFeatureVersion.push(data[j]);
+        }
+        drillDownPackagesFoundMap.set(featureVersion, drillDownPackagesFoundForFeatureVersion);
+      } else {
+        // no package found
+        drillDownPackageMap.set(featureVersion, null);
+        document.getElementById('dd-jdk-' + featureVersion).disabled = true;
+        document.getElementById('dd-jdk-selector-label-' + featureVersion).title = '   Not available for ' + getOperatingSystem();
+      }
+    }
+
+    // Disable download area with labels etc.
+    document.getElementById("dd-download-area").setAttribute("data-status", "-1");
+    document.getElementById("dd-download-label").setAttribute("data-status", "-1");
+    document.getElementById("dd-version-number-label").innerText = '-';
+    document.getElementById("dd-version-number-label").setAttribute("data-status", "-1");
+    document.getElementById("dd-archive-type-dropdown").setAttribute("data-status", "-1");
+    document.getElementById("dd-filename-label").innerText       = '-';
+    document.getElementById("dd-filename-label").setAttribute("data-status", "-1");
+    for (var key of drillDownPackageMap.keys()) {
+      document.getElementById("dd-jdk-" + key).checked = false;
+    }
+  }
+
+  function updateSelectedDrillDownPackage() {
+
+    let drillDownExtensionDropdown = document.getElementById("dd-archive-type-dropdown");
+
+    let j_package   = drillDownPackagesFoundMap.get(selectedDrillDownFeatureVersion).find(j_package => j_package.archive_type.toString() == drillDownExtensionDropdown.value.toString());
+    let packageInfo = new PackageInfo(j_package.id, j_package.filename, j_package.java_version);
+    drillDownPackageMap.set(selectedDrillDownFeatureVersion, packageInfo);
+
+    if (null != j_package) {
+      document.getElementById("dd-version-number-label").innerText = drillDownPackageMap.get(selectedDrillDownFeatureVersion).versionNumber;
+      document.getElementById("dd-filename-label").innerText       = drillDownPackageMap.get(selectedDrillDownFeatureVersion).filename;
+    }
+  }
+
+  function selectDrillDownDistribution() {
+    let distroDropdown = document.getElementById('distro-dropdown');
+    let drillDownDistribution = drillDownDistroDropdown.value;
+    let major_versions = getMaintainedMajorVersions();
+    updateDrillDownPackageMap(drillDownDistribution, major_versions);
+  }
+
+  async function getMaintainedMajorVersions() {
+    const url            = baseUrl + '/disco/v2.0/major_versions?ea=true&ga=true&maintained=true';
+    let   major_versions = await makeRequest("GET", url);
+    return major_versions;
+  }
+
+  async function showHideDrillDownVersions() {
+    if (selectedDrillDownFeatureVersion == null || selectedDrillDownFeatureVersion == undefined) { return; }
+    let checkBox = document.getElementById('checkbox');
+    let drillDownVersions         = document.getElementById('drill-down-versions');
+    let drillDownDistros          = document.getElementById('drill-down-distros');
+    let drillDownOperatingSystems = document.getElementById('drill-down-os');
+    let drillDownArchiveTypes     = document.getElementById('drill-down-archive-types');
+    let operatingSystem           = getOperatingSystem();
+
+    if (checkBox.checked) {
+      let   majorVersionJson = await getMajorVersion(selectedDrillDownFeatureVersion);
+      const responseData     = JSON.parse(majorVersionJson);
+      const data             = responseData.result[0];
+
+      let versionNumbersForSelectedMajorVersion = [];
+      if (data) {
+        let versions = data.versions;
+        for (let i = 0 ; i < versions.length ; i++) {
+          versionNumbersForSelectedMajorVersion.push(normalizeJavaVersion(versions[i]));
+        }
+        versionNumbersForSelectedMajorVersion = versionNumbersForSelectedMajorVersion.filter(uniqueOnly);
+      }
+
+      let drillDownVersionsDropdown = document.getElementById('dd-version-dropdown');
+      removeDropdownEntries(drillDownVersionsDropdown, true);
+
+      let option   = document.createElement('option');
+      option.id    = '-';
+      option.text  = '-';
+      option.value = '-';
+      drillDownVersionsDropdown.add(option);
+      for (let i = 0 ; i < versionNumbersForSelectedMajorVersion.length ; i++) {
+        option       = document.createElement('option');
+        option.id    = versionNumbersForSelectedMajorVersion[i];
+        option.text  = versionNumbersForSelectedMajorVersion[i];
+        option.value = versionNumbersForSelectedMajorVersion[i];
+        drillDownVersionsDropdown.add(option);
+      }
+      drillDownVersions.style.display = 'block';
+    } else {
+      drillDownVersions.style.display         = 'none';
+      drillDownDistros.style.display          = 'none';
+      drillDownOperatingSystems.style.display = 'none';
+      drillDownArchiveTypes.style.display     = 'none';
+    }
+  }
+
+  async function showHideDrillDownDistros() {
+    if (selectedDrillDownFeatureVersion == null || selectedDrillDownFeatureVersion == undefined) { return; }
+    let drillDownVersions             = document.getElementById('drill-down-versions');
+    let drillDownDistros              = document.getElementById('drill-down-distros');
+    let drillDownOperatingSystems         = document.getElementById('drill-down-os');
+    let drillDownVersionsDropdown     = document.getElementById('dd-version-dropdown');
+    let drillDownDistrosDropdown      = document.getElementById('dd-distro-dropdown');
+    let drillDownOperatingSystemsDropdown = document.getElementById('dd-os-dropdown');
+    let drillDownArchiveTypes             = document.getElementById('drill-down-archive-types');
+    let operatingSystem                   = getOperatingSystem();
+
+    let packageUrl     = baseUrl + '/disco/v2.0/packages' + '?version=' + drillDownVersionsDropdown.value + '&operating_system=' + operatingSystem + '&architecture=x64' + '&package_type=jdk' + '&release_status=ga' + '&release_status=ea&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
+    let packagesJson   = await getPackages(packageUrl);
+    const responseData = JSON.parse(packagesJson);
+    const data         = responseData.result;
+
+    let distrosForSelectedVersion = [];
+    if (data.length > 0) {
+      for (let i = 0 ; i < data.length ; i++) {
+        let distro = data[i].distribution;
+        if (distro == 'sap_machine') {
+          distrosForSelectedVersion.push('SAP Machine');
+        } else if (distro == 'oracle_open_jdk') {
+          distrosForSelectedVersion.push('Oracle OpenJDK');
+        } else if (distro =='aoj') {
+          distrosForSelectedVersion.push('AOJ');
+        } else if (distro =='aoj_openj9') {
+          distrosForSelectedVersion.push('AOJ OpenJ9');
+        } else if (distro == 'azure_zulu') {
+          distrosForSelectedVersion.push('Azure Zulu');
+        } else {
+          distrosForSelectedVersion.push(capitalize(data[i].distribution));
+        }
+      }
+      distrosForSelectedVersion = distrosForSelectedVersion.filter(uniqueOnly);
+    }
+    removeDropdownEntries(drillDownDistrosDropdown,);
+    let option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownDistrosDropdown.add(option);
+    for (let i = 0 ; i < distrosForSelectedVersion.length ; i++) {
+      option       = document.createElement('option');
+      option.id    = distrosForSelectedVersion[i];
+      option.text  = distrosForSelectedVersion[i];
+      option.value = distrosForSelectedVersion[i];
+      drillDownDistrosDropdown.add(option);
+    }
+    drillDownDistros.style.display   = 'block';
+
+    removeDropdownEntries(drillDownOperatingSystemsDropdown);
+    option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownOperatingSystemsDropdown.add(option);
+    drillDownOperatingSystems.style.display = 'none';
+    drillDownArchiveTypes.style.display     = 'none';
+  }
+
+  async function showHideDrillDownOperatingSystems() {
+    if (selectedDrillDownFeatureVersion == null || selectedDrillDownFeatureVersion == undefined) { return; }
+    let drillDownOperatingSystems         = document.getElementById('drill-down-os');
+    let drillDownOperatingSystemsDropdown = document.getElementById('dd-os-dropdown');
+    let drillDownVersionsDropdown         = document.getElementById('dd-version-dropdown');
+    let drillDownDistrosDropdown          = document.getElementById('dd-distro-dropdown');
+    let drillDownArchitecturesDropdown    = document.getElementById('dd-arc-dropdown');
+    let drillDownArchiveTypesDropdown     = document.getElementById('dd-archive-type-dropdown');
+    let drillDownArchitectures            = document.getElementById('drill-down-arc');
+
+    let distro = drillDownDistrosDropdown.value.toLowerCase();
+    if (distro == 'sap machine') { distro = 'sap_machine'; }
+
+    let nextMajorVersionJson = await getMajorVersion('latest_ea');
+    let nextMajorVersion     = JSON.parse(nextMajorVersionJson);
+    let nextFeatureVersion   = nextMajorVersion.major_version;
+
+    let   packageUrl   = baseUrl + '/disco/v2.0/packages' + '?version=' + drillDownVersionsDropdown.value + '&distro=' + distro + '&architecture=x64' + '&package_type=jdk' + '&release_status=ga' + '&release_status=ea&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
+    let   packagesJson = await getPackages(packageUrl);
+    const responseData = JSON.parse(packagesJson);
+    const data         = responseData.result;
+
+    let operatingSystemsForSelectedDistro = [];
+    if (data.length > 0) {
+      let selectedJavaVersion = normalizeJavaVersion(drillDownVersionsDropdown.value);
+      for (let i = 0 ; i < data.length ; i++) {
+        let javaVersion = normalizeJavaVersion(data[i].java_version);
+        if (javaVersion === selectedJavaVersion) {
+          operatingSystemsForSelectedDistro.push(data[i].operating_system);
+        }
+      }
+      operatingSystemsForSelectedDistro = operatingSystemsForSelectedDistro.filter(uniqueOnly);
+    }
+
+    removeDropdownEntries(drillDownOperatingSystemsDropdown);
+    let option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownOperatingSystemsDropdown.add(option);
+    for (let i = 0 ; i < operatingSystemsForSelectedDistro.length ; i++) {
+      option       = document.createElement('option');
+      option.id    = operatingSystemsForSelectedDistro[i];
+      option.text  = operatingSystemsForSelectedDistro[i];
+      option.value = operatingSystemsForSelectedDistro[i];
+      drillDownOperatingSystemsDropdown.add(option);
+    }
+    drillDownOperatingSystems.style.display = 'block';
+
+    removeDropdownEntries(drillDownArchitecturesDropdown);
+    option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownArchitecturesDropdown.add(option);
+    drillDownArchitectures.style.display = 'none';
+  }
+  
+  async function showHideDrillDownArchitectures() {
+     if (selectedDrillDownFeatureVersion == null || selectedDrillDownFeatureVersion == undefined) { return; }
+    let drillDownOperatingSystems         = document.getElementById('drill-down-os');
+    let drillDownOperatingSystemsDropdown = document.getElementById('dd-os-dropdown');
+    let drillDownVersionsDropdown         = document.getElementById('dd-version-dropdown');
+    let drillDownDistrosDropdown          = document.getElementById('dd-distro-dropdown');
+    let drillDownArchitecturesDropdown    = document.getElementById('dd-arc-dropdown');
+    let drillDownArchiveTypesDropdown     = document.getElementById('dd-archive-type-dropdown');
+    let drillDownArchiveTypes             = document.getElementById('drill-down-archive-types');
+    let drillDownArchitectures            = document.getElementById('drill-down-arc');
+
+    let distro = drillDownDistrosDropdown.value.toLowerCase();
+    if (distro == 'sap machine') { distro = 'sap_machine'; }
+
+    let nextMajorVersionJson = await getMajorVersion('latest_ea');
+    let nextMajorVersion     = JSON.parse(nextMajorVersionJson);
+    let nextFeatureVersion   = nextMajorVersion.major_version;
+
+    let selectedJavaVersion  = drillDownVersionsDropdown.value;
+
+    let   packageUrl   = baseUrl + '/disco/v2.0/packages' + '?version=' + selectedJavaVersion + '&distro=' + distro + '&operating_system=' + drillDownOperatingSystemsDropdown.value + '&package_type=jdk' + '&release_status=ga' + '&release_status=ea&discovery_scope_id=public&discovery_scope_id=build_of_openjdk'; 
+    let   packagesJson = await getPackages(packageUrl);
+    const responseData = JSON.parse(packagesJson);
+    const data         = responseData.result;
+
+    let architecturesForSelectedDistro = [];
+    if (data.length > 0) {
+      let selectedJavaVersion = normalizeJavaVersion(drillDownVersionsDropdown.value);
+      for (let i = 0 ; i < data.length ; i++) {
+        let javaVersion = normalizeJavaVersion(data[i].java_version);
+        if (javaVersion === selectedJavaVersion) {
+          architecturesForSelectedDistro.push(data[i].architecture);
+        }
+      }
+      architecturesForSelectedDistro = architecturesForSelectedDistro.filter(uniqueOnly);
+    }
+
+    removeDropdownEntries(drillDownArchitecturesDropdown);
+    let option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownArchitecturesDropdown.add(option);
+    for (let i = 0 ; i < architecturesForSelectedDistro.length ; i++) {
+      option       = document.createElement('option');
+      option.id    = architecturesForSelectedDistro[i];
+      option.text  = architecturesForSelectedDistro[i];
+      option.value = architecturesForSelectedDistro[i];
+      drillDownArchitecturesDropdown.add(option);
+    }
+    drillDownArchitectures.style.display = 'block';
+
+    removeDropdownEntries(drillDownArchiveTypesDropdown);
+    option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownArchiveTypesDropdown.add(option);
+    drillDownArchiveTypes.style.display = 'none';
+  }
+
+  async function showHideDrillDownArchiveTypes() {
+    if (selectedDrillDownFeatureVersion == null || selectedDrillDownFeatureVersion == undefined) { return; }
+    let drillDownArchiveTypes         = document.getElementById('drill-down-archive-types');
+    let drillDownVersionsDropdown     = document.getElementById('dd-version-dropdown');
+    let drillDownDistrosDropdown      = document.getElementById('dd-distro-dropdown');
+    let drillDownArchitecturesDropdown    = document.getElementById('dd-arc-dropdown');
+    let drillDownArchiveTypesDropdown = document.getElementById('dd-archive-type-dropdown');
+    let drillDownOperatingSystemsDropdown = document.getElementById('dd-os-dropdown');
+
+    let distro = drillDownDistrosDropdown.value.toLowerCase();
+    if (distro == 'sap machine') { distro = 'sap_machine'; }
+
+    let nextMajorVersionJson = await getMajorVersion('latest_ea');
+    let nextMajorVersion     = JSON.parse(nextMajorVersionJson);
+    let nextFeatureVersion   = nextMajorVersion.major_version;
+
+    let selectedJavaVersion  = drillDownVersionsDropdown.value;
+
+    let   packageUrl   = baseUrl + '/disco/v2.0/packages' + '?version=' + selectedJavaVersion + '&distro=' + distro + '&operating_system=' + drillDownOperatingSystemsDropdown.value + '&architecture=' + drillDownArchitecturesDropdown.value + '&package_type=jdk' + '&release_status=ga' + '&release_status=ea&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
+    let packagesJson = await getPackages(packageUrl);
+    const responseData = JSON.parse(packagesJson);
+    const data         = responseData.result;
+
+    let archiveTypesForSelectedDistro = [];
+    if (data.length > 0) {
+      for (let i = 0 ; i < data.length ; i++) {
+        if (normalizeJavaVersion(data[i].java_version) === selectedJavaVersion) {
+          archiveTypesForSelectedDistro.push(data[i].archive_type);
+        }
+      }
+      archiveTypesForSelectedDistro = archiveTypesForSelectedDistro.filter(uniqueOnly);
+    }
+
+    removeDropdownEntries(drillDownArchiveTypesDropdown);
+    let option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownArchiveTypesDropdown.add(option);
+    for (let i = 0 ; i < archiveTypesForSelectedDistro.length ; i++) {
+      option       = document.createElement('option');
+      option.id    = archiveTypesForSelectedDistro[i];
+      option.text  = archiveTypesForSelectedDistro[i];
+      option.value = archiveTypesForSelectedDistro[i];
+      drillDownArchiveTypesDropdown.add(option);
+    }
+    drillDownArchiveTypes.style.display = 'block';
+  }
+
+  async function updateDrillDownDownload() {
+    if (selectedDrillDownFeatureVersion == null || selectedDrillDownFeatureVersion == undefined) { return; }
+    let drillDownVersionsDropdown         = document.getElementById('dd-version-dropdown');
+    let drillDownDistrosDropdown          = document.getElementById('dd-distro-dropdown');
+    let drillDownArchitecturesDropdown    = document.getElementById('dd-arc-dropdown');
+    let drillDownArchiveTypesDropdown     = document.getElementById('dd-archive-type-dropdown');
+    let drillDownOperatingSystemsDropdown = document.getElementById('dd-os-dropdown');
+
+    let distro = drillDownDistrosDropdown.value.toLowerCase();
+    if (distro == 'sap machine') { distro = 'sap_machine'; }
+
+    let   packageUrl   = baseUrl + '/disco/v2.0/packages' + '?version=' + drillDownVersionsDropdown.value + '&distro=' + distro + '&archive_type=' + drillDownArchiveTypesDropdown.value + '&operating_system=' + drillDownOperatingSystemsDropdown.value + '&architecture=' + drillDownArchitecturesDropdown.value + '&package_type=jdk' + '&release_status=ga' + '&release_status=ea&discovery_scope_id=build_of_openjdk';
+    let   packagesJson = await getPackages(packageUrl);
+    const responseData = JSON.parse(packagesJson);
+    const data         = responseData.result;
+  
+    if (data.length > 0) {
+      for (let i = 0 ; i < data.length ; i++) {
+        if (normalizeJavaVersion(data[i].java_version) === drillDownVersionsDropdown.value && data[i].archive_type === drillDownArchiveTypesDropdown.value) {
+          document.getElementById("dd-download-label").setAttribute("package-id", data[i].id)
+          document.getElementById("dd-download-area").setAttribute("data-status", "0");
+          document.getElementById("dd-download-label").setAttribute("data-status", "0");
+          document.getElementById("dd-version-number-label").setAttribute("data-status", "0");
+          document.getElementById("dd-version-number-label").innerText = data[i].java_version;
+          document.getElementById("dd-archive-type-dropdown").setAttribute("data-status", "0");
+          document.getElementById("dd-filename-label").setAttribute("data-status", "0");
+          document.getElementById("dd-filename-label").innerText = data[i].filename;
+
+          let a = document.getElementById('dd-dl-a');
+          a.href = await getDownloadLink(data[i].id, data[i].directly_downloadable);
+          break;
+        }
+      }
+    }
+  }
+
+  async function drillDownDownloadPackage() {
+  let packageId     = document.getElementById("dd-download-label").getAttribute("package-id");
+  let downloadLink = await getDownloadLink(packageId, true);
+  if (downloadLink != undefined) {
+    document.getElementById('dd-dl-frame').src = downloadLink;
+  } 
+}
+
+
+
+  // ******************** Drill down by distribution JDK Selector *************
+  async function initDrillDownDistributionSelectors() {
+    let distributionsJson = await getDistributions();
+    let resultJson        = JSON.parse(distributionsJson);
+    let distributions     = resultJson.result;
+    
+    let distroSelectorsLeft  = document.getElementById('ddd-distro-selectors-left');
+    let distroSelectorsMiddle = document.getElementById('ddd-distro-selectors-middle');
+    let distroSelectorsRight  = document.getElementById('ddd-distro-selectors-right');
+
+    for (var i = 0 ; i < distributions.length ; i++) {
+      let d = distributions[i];
+      var div = document.createElement('div');
+      div.className = "left-container";
+
+      var input = document.createElement('input');
+      input.type     = 'radio';
+      input.id       = 'ddd-distro-' + d.name;
+      input.name     = 'distribution';
+      input.value    = d.api_parameter;
+      input.onchange = function() { updateDrillDownDistributionMajorVersions(document.getElementById('ddd-distro-' + d.name).value); };
+      div.appendChild(input);
+
+      var label = document.createElement('label');
+      label.id        = 'ddd-distro-selector-label-' + d.name;
+      label.for       = 'ddd-distro-' + d.name;
+      label.className = 'jdk-selector';
+      label.innerText = ' ' + d.name;
+      label.title     = '';
+      div.appendChild(label);
+      if (i >= 14) {
+        distroSelectorsRight.appendChild(div);
+      } else if (i >= 7) {
+        distroSelectorsMiddle.appendChild(div);
+      } else {
+        distroSelectorsLeft.appendChild(div);
+      }
+    }
+  }
+
+  /**
+  * Select a distribution, load all available feature version for this distribution
+  * and show the major_version dropdown box with the available feature versions
+  **/
+  async function updateDrillDownDistributionMajorVersions(distribution) {
+    if (null == distribution || undefined === distribution) { return; }
+    selectedDrillDownDistribution = distribution;
+
+    let distroJson     = await getDistribution(distribution);
+    const responseData = JSON.parse(distroJson);
+    const distro       = responseData.result[0];
+    let versions       = distro.versions;
+    let major_versions   = [];
+    for (let i = 0 ; i < versions.length ; i++) {
+        let mv = parseInt(versions[i].match(/^\d+/)[0], 10);
+        major_versions.push(mv);
+    }
+    major_versions = major_versions.filter(uniqueOnly);
+
+    document.getElementById('drill-down-distribution-major_versions').style.display = 'block';
+    let drillDownDistributionMajorVersionsDropdown = document.getElementById('ddd-major_version-dropdown');
+    while(drillDownDistributionMajorVersionsDropdown.firstChild) {
+      drillDownDistributionMajorVersionsDropdown.removeChild(drillDownDistributionMajorVersionsDropdown.firstChild);
+    }
+
+    let option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownDistributionMajorVersionsDropdown.add(option);
+    for (let i = 0 ; i < major_versions.length ; i++) {
+      option       = document.createElement('option');
+      option.id    = major_versions[i];
+      option.text  = major_versions[i];
+      option.value = major_versions[i];
+      drillDownDistributionMajorVersionsDropdown.add(option);
+    }
+
+    document.getElementById('drill-down-distribution-versions').style.display = 'none';
+    let drillDownDistributionVersionsDropdown = document.getElementById('ddd-version-dropdown');
+    while(drillDownDistributionVersionsDropdown.firstChild) {
+      drillDownDistributionVersionsDropdown.removeChild(drillDownDistributionVersionsDropdown.firstChild);
+    }
+
+    document.getElementById('drill-down-distribution-operating-systems').style.display = 'none';
+    let drillDownDistributionOperatingSystemsDropdown = document.getElementById('ddd-operating-system-dropdown');
+    while(drillDownDistributionOperatingSystemsDropdown.firstChild) {
+      drillDownDistributionOperatingSystemsDropdown.removeChild(drillDownDistributionOperatingSystemsDropdown.firstChild);
+    }
+    
+    document.getElementById('drill-down-distribution-architectures').style.display = 'none';
+    let drillDownDistributionArchitecturesDropdown = document.getElementById('ddd-arc-dropdown');
+    while(drillDownDistributionArchitecturesDropdown.firstChild) {
+      drillDownDistributionArchitecturesDropdown.removeChild(drillDownDistributionArchitecturesDropdown.firstChild);
+    }
+
+    document.getElementById('drill-down-distribution-archive-types').style.display = 'none';
+    let drillDownDistributionArchiveTypesDropdown = document.getElementById('ddd-archive-type-dropdown');
+    while(drillDownDistributionArchiveTypesDropdown.firstChild) {
+      drillDownDistributionArchiveTypesDropdown.removeChild(drillDownDistributionArchiveTypesDropdown.firstChild);
+    }
+
+    document.getElementById("ddd-download-label").setAttribute("package-id", "")
+    document.getElementById("ddd-download-area").setAttribute("data-status", "-1");
+    document.getElementById("ddd-download-label").setAttribute("data-status", "-1");
+    document.getElementById("ddd-version-number-label").setAttribute("data-status", "-1");
+    document.getElementById("ddd-version-number-label").innerText = "-";
+    document.getElementById("ddd-arc-dropdown").setAttribute("data-status", "-1");
+    document.getElementById("ddd-archive-type-dropdown").setAttribute("data-status", "-1");
+    document.getElementById("ddd-filename-label").setAttribute("data-status", "-1");
+    document.getElementById("ddd-filename-label").innerText = "-";
+  }
+
+  async function getDistributions() {
+    const url      = baseUrl + '/disco/v2.0/distributions?discovery_scope_id=build_of_openjdk&discovery_scope_id=public';
+    let   distributions = await makeRequest("GET", url);
+    return distributions;
+  }
+
+  async function getDistribution(distribution) {
+    const url    = baseUrl + '/disco/v2.0/distributions/' + distribution.toLowerCase() + '?discovery_scope_id=build_of_openjdk&discovery_scope_id=public';
+    let   distro = await makeRequest("GET", url);
+    return distro;
+  }
+
+  async function showHideDrillDownDistributionVersions() {
+    if (null == selectedDrillDownDistribution || undefined == selectedDrillDownDistribution) { return; }
+
+    let selectedFeatureMajorVersion = document.getElementById('ddd-major_version-dropdown').value;
+
+    let   distroJson   = await getDistribution(selectedDrillDownDistribution);
+    const responseData = JSON.parse(distroJson);
+    const distro       = responseData.result[0];
+    let   versions     = distro.versions;
+
+    document.getElementById('drill-down-distribution-versions').style.display = 'block';
+    let drillDownDistributionVersionsDropdown = document.getElementById('ddd-version-dropdown');
+    while(drillDownDistributionVersionsDropdown.firstChild) {
+      drillDownDistributionVersionsDropdown.removeChild(drillDownDistributionVersionsDropdown.firstChild);
+    }
+
+    let option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownDistributionVersionsDropdown.add(option);
+    for (let i = 0 ; i < versions.length ; i++) {
+      let version  = versions[i];
+      if (version.split('.')[0] == selectedFeatureMajorVersion) {
+        option       = document.createElement('option');
+        option.id    = version;
+        option.text  = version;
+        option.value = version;
+        drillDownDistributionVersionsDropdown.add(option);
+    }
+    }
+
+    document.getElementById('drill-down-distribution-operating-systems').style.display = 'none';
+    document.getElementById('drill-down-distribution-archive-types').style.display = 'none';
+
+    let drillDownDistributionOperatingSystemsDropdown = document.getElementById('ddd-operating-system-dropdown');
+    while(drillDownDistributionOperatingSystemsDropdown.firstChild) {
+      drillDownDistributionOperatingSystemsDropdown.removeChild(drillDownDistributionOperatingSystemsDropdown.firstChild);
+    }
+
+    document.getElementById("ddd-download-label").setAttribute("package-id", "")
+    document.getElementById("ddd-download-area").setAttribute("data-status", "-1");
+    document.getElementById("ddd-download-label").setAttribute("data-status", "-1");
+    document.getElementById("ddd-version-number-label").setAttribute("data-status", "-1");
+    document.getElementById("ddd-version-number-label").innerText = "-";
+    document.getElementById("ddd-archive-type-dropdown").setAttribute("data-status", "-1");
+    document.getElementById("ddd-filename-label").setAttribute("data-status", "-1");
+    document.getElementById("ddd-filename-label").innerText = "-";
+  }
+
+  async function showHideDrillDownDistributionOperatingSystems() {
+    if (null == selectedDrillDownDistribution || undefined == selectedDrillDownDistribution) { return; }
+
+    let selectedVersion = document.getElementById('ddd-version-dropdown').value;
+
+    document.getElementById('drill-down-distribution-architectures').style.display = 'none';
+    let drillDownDistributionArchitecturesDropdown = document.getElementById('ddd-arc-dropdown');
+    while(drillDownDistributionArchitecturesDropdown.firstChild) {
+      drillDownDistributionArchitecturesDropdown.removeChild(drillDownDistributionArchitecturesDropdown.firstChild);
+    }
+
+    document.getElementById('drill-down-distribution-operating-systems').style.display = 'block';
+    let drillDownDistributionOperatingSystemsDropdown = document.getElementById('ddd-operating-system-dropdown');
+    while(drillDownDistributionOperatingSystemsDropdown.firstChild) {
+      drillDownDistributionOperatingSystemsDropdown.removeChild(drillDownDistributionOperatingSystemsDropdown.firstChild);
+    }
+
+    let   packageUrl   = baseUrl + '/disco/v2.0/packages' + '?version=' + selectedVersion + '&distro=' + selectedDrillDownDistribution + '&package_type=jdk&discovery_scope_id=build_of_openjdk&discovery_scope_id=public';
+    let   packagesJson = await getPackages(packageUrl);
+    const responseData = JSON.parse(packagesJson);
+    const data         = responseData.result;
+
+    let operatingSystemsForSelectedDistro = [];
+    if (data.length > 0) {
+      for (let i = 0 ; i < data.length ; i++) {
+        operatingSystemsForSelectedDistro.push(data[i].operating_system);
+      }
+      operatingSystemsForSelectedDistro = operatingSystemsForSelectedDistro.filter(uniqueOnly);
+    }
+
+    let option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownDistributionOperatingSystemsDropdown.add(option);
+    for (let i = 0 ; i < operatingSystemsForSelectedDistro.length ; i++) {
+      option       = document.createElement('option');
+      option.id    = operatingSystemsForSelectedDistro[i];
+      option.text  = operatingSystemsForSelectedDistro[i];
+      option.value = operatingSystemsForSelectedDistro[i];
+      drillDownDistributionOperatingSystemsDropdown.add(option);
+    }
+  }
+
+  async function showHideDrillDownDistributionArchitectures() {
+    if (null == selectedDrillDownDistribution || undefined == selectedDrillDownDistribution) { return; }
+
+    let selectedVersion = document.getElementById('ddd-version-dropdown').value;
+
+    document.getElementById('drill-down-distribution-archive-types').style.display = 'none';
+    let drillDownDistributionArchiveTypesDropdown = document.getElementById('ddd-archive-type-dropdown');
+    while(drillDownDistributionArchiveTypesDropdown.firstChild) {
+      drillDownDistributionArchiveTypesDropdown.removeChild(drillDownDistributionArchiveTypesDropdown.firstChild);
+    }
+
+    document.getElementById('drill-down-distribution-architectures').style.display = 'block';
+    let drillDownDistributionArchitecturesDropdown = document.getElementById('ddd-arc-dropdown');
+    while(drillDownDistributionArchitecturesDropdown.firstChild) {
+      drillDownDistributionArchitecturesDropdown.removeChild(drillDownDistributionArchitecturesDropdown.firstChild);
+    }
+
+    let selectedOperatingSystem = document.getElementById('ddd-operating-system-dropdown').value;
+
+    let   packageUrl   = baseUrl + '/disco/v2.0/packages' + '?version=' + selectedVersion + '&distro=' + selectedDrillDownDistribution + '&operating_system=' + selectedOperatingSystem + '&package_type=jdk&discovery_scope_id=build_of_openjdk&discovery_scope_id=public';
+    let   packagesJson = await getPackages(packageUrl);
+    const responseData = JSON.parse(packagesJson);
+    const data         = responseData.result;
+
+    let architecturesForSelectedDistro = [];
+    if (data.length > 0) {
+      for (let i = 0 ; i < data.length ; i++) {
+        architecturesForSelectedDistro.push(data[i].architecture);
+      }
+      architecturesForSelectedDistro = architecturesForSelectedDistro.filter(uniqueOnly);
+    }
+
+    let option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownDistributionArchitecturesDropdown.add(option);
+    for (let i = 0 ; i < architecturesForSelectedDistro.length ; i++) {
+      option       = document.createElement('option');
+      option.id    = architecturesForSelectedDistro[i];
+      option.text  = architecturesForSelectedDistro[i];
+      option.value = architecturesForSelectedDistro[i];
+      drillDownDistributionArchitecturesDropdown.add(option);
+    }
+  }
+
+  async function showHideDrillDownDistributionArchiveTypes() {
+    if (null == selectedDrillDownDistribution || undefined == selectedDrillDownDistribution) { return; }
+    
+    let selectedVersion                               = document.getElementById('ddd-version-dropdown').value;
+    let drillDownDistributionOperatingSystemsDropdown = document.getElementById('ddd-operating-system-dropdown');
+
+    document.getElementById('drill-down-distribution-archive-types').style.display = 'block';
+    let drillDownDistributionArchiveTypesDropdown = document.getElementById('ddd-archive-type-dropdown');
+    while(drillDownDistributionArchiveTypesDropdown.firstChild) {
+      drillDownDistributionArchiveTypesDropdown.removeChild(drillDownDistributionArchiveTypesDropdown.firstChild);
+    }
+
+    let drillDownDistributionArchitectureDropdown = document.getElementById('ddd-arc-dropdown');
+
+    let packageUrl     = baseUrl + '/disco/v2.0/packages' + '?version=' + selectedVersion + '&distro=' + selectedDrillDownDistribution + '&operating_system=' + drillDownDistributionOperatingSystemsDropdown.value + '&architecture=' + drillDownDistributionArchitectureDropdown.value + '&package_type=jdk&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
+    let   packagesJson = await getPackages(packageUrl);
+    const responseData = JSON.parse(packagesJson);
+    const data         = responseData.result;
+
+    let archiveTypesForSelectedDistro = [];
+    if (data.length > 0) {
+      for (let i = 0 ; i < data.length ; i++) {
+        archiveTypesForSelectedDistro.push(data[i].archive_type);
+      }
+      archiveTypesForSelectedDistro = archiveTypesForSelectedDistro.filter(uniqueOnly);
+    }
+
+    let option   = document.createElement('option');
+    option.id    = '-';
+    option.text  = '-';
+    option.value = '-';
+    drillDownDistributionArchiveTypesDropdown.add(option);
+    for (let i = 0 ; i < archiveTypesForSelectedDistro.length ; i++) {
+      option       = document.createElement('option');
+      option.id    = archiveTypesForSelectedDistro[i];
+      option.text  = archiveTypesForSelectedDistro[i];
+      option.value = archiveTypesForSelectedDistro[i];
+      drillDownDistributionArchiveTypesDropdown.add(option);
+    }
+  }
+
+  async function updateDrillDownDistributionDownload() {
+    if (null == selectedDrillDownDistribution || undefined == selectedDrillDownDistribution) { return; }
+
+    let selectedVersion                               = document.getElementById('ddd-version-dropdown').value;
+    let selectedExtension                             = document.getElementById('ddd-archive-type-dropdown').value;
+    let drillDownDistributionOperatingSystemsDropdown = document.getElementById('ddd-operating-system-dropdown');
+    let drillDownDistributionArchitectureDropdown     = document.getElementById('ddd-arc-dropdown');
+
+    let   packageUrl   = baseUrl + '/disco/v2.0/packages' + '?version=' + selectedVersion + '&distro=' + selectedDrillDownDistribution + '&archive_type=' + selectedExtension + '&operating_system=' + drillDownDistributionOperatingSystemsDropdown.value + '&architecture=' + drillDownDistributionArchitectureDropdown.value + '&package_type=jdk&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
+    let packagesJson = await getPackages(packageUrl);
+    const responseData = JSON.parse(packagesJson);
+    const data         = responseData.result;
+    
+    if (data.length > 0) {
+      for (let i = 0 ; i < data.length ; i++) {
+        if (data[i].java_version.toString() == selectedVersion.toString() && data[i].archive_type.toString() == selectedExtension.toString()) {
+          document.getElementById("ddd-download-label").setAttribute("package-id", data[i].id)
+          document.getElementById("ddd-download-area").setAttribute("data-status", "0");
+          document.getElementById("ddd-download-label").setAttribute("data-status", "0");
+          document.getElementById("ddd-version-number-label").setAttribute("data-status", "0");
+          document.getElementById("ddd-version-number-label").innerText = data[i].java_version;
+          document.getElementById("ddd-archive-type-dropdown").setAttribute("data-status", "0");
+          document.getElementById("ddd-filename-label").setAttribute("data-status", "0");
+          document.getElementById("ddd-filename-label").innerText = data[i].filename;
+
+          let a = document.getElementById('ddd-dl-a');
+          a.href = await getDownloadLink(data[i].id, data[i].directly_downloadable);
+          break;
+        }
+      }
+    }
+  }
+
+  async function drillDownDistributionDownloadPackage() {
+  let packageId           = document.getElementById("ddd-download-label").getAttribute("package-id");
+  let downloadLink       = await getDownloadLink(packageId, true);
+  if (downloadLink != undefined) {
+    document.getElementById('ddd-dl-frame').src = downloadLink;
+  }
+}
+
+
+
+  // ******************** Detailed JDK Selector *******************************
+  function initMajorVersionsDetailed(latestLts) {
+    let majorVersionDropdown = document.getElementById('major_version-dropdown-detailed');
+    majorVersionDropdown.length = 0;
+
+    const option = document.createElement('option');
+    option.text  = 'All';
+    option.value = 'NONE';
+    majorVersionDropdown.add(option);
+
+    const request = new XMLHttpRequest();
+    const url     = baseUrl + '/disco/v2.0/major_versions?ea=true&ga=true'
+    request.open('GET', url, true);
+
+    request.onload = function() {
+      if (request.status === 200) {
+        const responseData = JSON.parse(request.responseText);
+        const data         = responseData.result;
+      
+        let option;
+        for (let i = 0; i < data.length; i++) {
+          option = document.createElement('option');
+          let r = data[i].major_version;
+          if (r > 5) {
+            option.text  = data[i].major_version;
+            option.value = data[i].major_version;
+            option.selected = data[i].major_version == latestLts;
+            majorVersionDropdown.add(option);
+          }
+        }
+        majorVersionDropdown.selectedIndex = 1;
+        updatePackageList();
+      } else {
+        // Reached the server, but it returned an error
+      }
+    }
+
+    request.onerror = function() {
+      console.error('An error occurred fetching the JSON from ' + url);
+    };
+
+    request.send();
+  }
+
+  async function initDistrosDetailed() {
+    let distroDropdown = document.getElementById('distro-dropdown-detailed');
+    distroDropdown.length = 0;
+
+    let distributionsJson = await getDistributions();
+    let resultJson        = JSON.parse(distributionsJson);
+    let distributions     = resultJson.result;
+
+    for (let i = 0; i < distributions.length; i++) {
+      let d = distributions[i];
+      const option = document.createElement('option');
+      option.text  = d.name;
+      option.value = d.api_parameter;
+      distroDropdown.add(option);
+    }
+    distroDropdown.selectedIndex = 0;
+  }
+
+  function initPackageTypesDetailed() {
+    let packageTypeDropdown = document.getElementById('package-type-dropdown-detailed');
+    packageTypeDropdown.length = 0;
+
+    let packageTypes = [ 'JDK', 'JRE' ];
+
+    for (let i = 0; i < packageTypes.length; i++) {
+      const option = document.createElement('option');
+      option.text  = packageTypes[i];
+      option.value = packageTypes[i];
+      packageTypeDropdown.add(option);
+    }
+    packageTypeDropdown.selectedIndex = 0;
+  }
+
+  function initOperatingSystemsDetailed() {
+    let operatingSystemDropdown = document.getElementById('operating-system-dropdown-detailed');
+    operatingSystemDropdown.length = 0;
+
+    let operatingSystems = [ 'Windows', 'Linux', 'Linux-Musl', 'MacOS', 'Solaris', 'AIX', 'QNX' ];
+
+    const option = document.createElement('option');
+    option.text  = 'All';
+    option.value = 'NONE';
+    operatingSystemDropdown.add(option);
+
+    for (let i = 0; i < operatingSystems.length; i++) {
+      const option = document.createElement('option');
+      option.text  = operatingSystems[i];
+      option.value = operatingSystems[i];
+      operatingSystemDropdown.add(option);
+    }
+    operatingSystemDropdown.selectedIndex = 0;
+  }
+
+  function initArchitecturesDetailed() {
+    let architectureDropdown = document.getElementById('architecture-dropdown-detailed');
+    architectureDropdown.length = 0;
+
+    let defaultOption = document.createElement('option');
+    defaultOption.text  = 'Architecture';
+    defaultOption.value = '-';
+
+    architectureDropdown.add(defaultOption);    
+
+    let architectures = [ 'aarch64', 'aarch32', 'ia64', 'mips', 'ppc', 'ppc64', 'ppc64le', 'riscv64', 's390x', 'sparc', 'sparcv9', 'x64', 'x32' ];
+
+    for (let i = 0; i < architectures.length; i++) {
+      const option = document.createElement('option');
+      option.text  = architectures[i];
+      option.value = architectures[i];
+      architectureDropdown.add(option);
+    }
+    architectureDropdown.selectedIndex = 0;
+  }
+
+  function initArchiveTypesDetailed() {
+    let archiveTypeDropdown = document.getElementById('archive-type-dropdown-detailed');
+    archiveTypeDropdown.length = 0;
+
+    let defaultOption = document.createElement('option');
+    defaultOption.text  = 'Archive Type';
+    defaultOption.value = '-';
+
+    archiveTypeDropdown.add(defaultOption);
+
+    let archiveTypes = [ 'cab', 'deb', 'dmg', 'exe', 'msi', 'pkg', 'rpm', 'tar.gz', 'zip' ];
+
+    for (let i = 0; i < archiveTypes.length; i++) {
+      const option = document.createElement('option');
+      option.text  = archiveTypes[i];
+      option.value = archiveTypes[i];
+      archiveTypeDropdown.add(option);
+    }
+    archiveTypeDropdown.selectedIndex = 0;
+  }
+
+  async function updatePackageList() {
+    let majorVersionDropdown    = document.getElementById('major_version-dropdown-detailed');
+    let featureVersion          = majorVersionDropdown.value;
+
+    let distroDropdown          = document.getElementById('distro-dropdown-detailed');
+    let distribution            = distroDropdown.value;
+
+    let packageTypeDropdown     = document.getElementById('package-type-dropdown-detailed');
+    let packageType             = packageTypeDropdown.value;
+
+    let architectureDropdown    = document.getElementById('architecture-dropdown-detailed');
+    let architecture            = '-' == architectureDropdown.value ? undefined : architectureDropdown.value;
+
+    let archiveTypeDropdown     = document.getElementById('archive-type-dropdown-detailed');
+    let archiveType             = archiveTypeDropdown.value;
+
+    let operatingSystemDropdown = document.getElementById('operating-system-dropdown-detailed');
+    let operatingSystem         = undefined == operatingSystemDropdown.value ? getOperatingSystem() : operatingSystemDropdown.value;
+
+    if (operatingSystem == 'Linux-Musl') {
+        operatingSystem = 'linux_musl&operating_system=alpine_linux';
+    }
+
+    let eaCheckbox              = document.getElementById('ea_checkbox');
+    let includeEarlyAccess      = eaCheckbox.checked;
+
+    let packageUrl;
+    if (featureVersion === 'NONE') {
+        packageUrl = baseUrl + '/disco/v2.0/packages' + '?distro=' + distribution + (architecture != undefined ? ('&architecture=' + architecture) : '') + '&package_type=' + packageType + (operatingSystem === 'NONE' ? '' : '&operating_system=' + operatingSystem) + (includeEarlyAccess ? '&release_status=ea' : '') + '&latest=all_of_version&release_status=ga&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
+    } else {
+        packageUrl = baseUrl + '/disco/v2.0/packages' + '?version=' + featureVersion + '&distro=' + distribution + '&package_type=' + packageType + (architecture != undefined ? ('&architecture=' + architecture) : '') + (operatingSystem === 'NONE' ? '' : '&operating_system=' + operatingSystem) + (includeEarlyAccess ? '&release_status=ea' : '') + '&latest=all_of_version&release_status=ga&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
+    }
+
+    if (archiveType !== '-') { packageUrl += '&archive_type=' + archiveType;}
+
+    // Remove all entries from package list
+    let packageList = document.getElementById('package-list');
+    while(packageList.firstChild) {
+      packageList.removeChild(packageList.firstChild);
+    }
+
+    let packagesJson = await getPackages(packageUrl);
+    const responseData = JSON.parse(packagesJson);
+    const data         = responseData.result;
+    for (let i = 0 ; i < data.length ; i++) {
+      var j_package = data[i];
+      // Create item entries for package
+      let versionEntry = document.createElement('div');
+      versionEntry.className = 'version-clz';
+      versionEntry.innerText = j_package.java_version;
+
+      let distroEntry = document.createElement('div');
+      distroEntry.className = 'distro-clz';
+      distroEntry.value     = j_package.distribution;
+
+      switch(j_package.distribution) {
+        case 'aoj'             : distroEntry.innerText = 'AOJ'; break;
+        case 'aoj_openj9'      : distroEntry.innerText = 'AOJ OpenJ9'; break;
+        case 'corretto'        : distroEntry.innerText = 'Corretto'; break;
+        case 'dragonwell'      : distroEntry.innerText = 'Dragonwell'; break;
+        case 'liberica'        : distroEntry.innerText = 'Liberica'; break;
+        case 'oracle'          : distroEntry.innerText = 'Oracle'; break;
+        case 'oracle_open_jdk' : distroEntry.innerText = 'Oracle OpenJDK'; break;
+        case 'redhat'          : distroEntry.innerText = 'Red Hat'; break;
+        case 'sap_machine'     : distroEntry.innerText = "SAP Machine"; break;
+        case 'azure_zulu'      : distroEntry.innerText = "Azure Zulu"; break;
+        case 'zulu'            : distroEntry.innerText = 'Zulu'; break;
+        default                : break;
+      }
+
+      let packageTypeEntry = document.createElement('div');
+      packageTypeEntry.className = 'package-type-clz';
+      packageTypeEntry.innerText = j_package.package_type;
+
+      let releaseStatusEntry = document.createElement('div');
+      releaseStatusEntry.className = 'release-status-clz';
+      releaseStatusEntry.innerText = j_package.release_status;
+
+      let archiveTypeEntry = document.createElement('div');
+      archiveTypeEntry.className = 'archive-type-clz';
+      archiveTypeEntry.innerText = j_package.archive_type;
+
+      let operatingSystemTypeEntry = document.createElement('div');
+      operatingSystemTypeEntry.className = 'os-clz';
+      operatingSystemTypeEntry.innerText = j_package.operating_system;
+
+      let architectureEntry = document.createElement('div');
+      architectureEntry.className = 'architecture-clz';
+      architectureEntry.innerText = j_package.architecture;
+
+      let filenameEntry = document.createElement('div');
+      filenameEntry.className = 'filename-clz';
+      filenameEntry.innerText = j_package.filename;
+
+      // Create list entry
+      let listEntry = document.createElement('div');
+      listEntry.className = 'list-entry';
+      listEntry.appendChild(versionEntry);
+      listEntry.appendChild(distroEntry);
+      listEntry.appendChild(packageTypeEntry);
+      listEntry.appendChild(releaseStatusEntry);
+      listEntry.appendChild(archiveTypeEntry);
+      listEntry.appendChild(operatingSystemTypeEntry);
+      listEntry.appendChild(architectureEntry);
+      listEntry.appendChild(filenameEntry);
+
+      // Create list item
+      let listItem = document.createElement('li');
+      listItem.appendChild(listEntry);
+      listItem.setAttribute("data-selected", "0");
+      listItem.setAttribute("package-id", j_package.id);
+      listItem.setAttribute("version", j_package.java_version);
+      listItem.setAttribute("filename", j_package.filename);
+      listItem.setAttribute("directlyDownloadable", j_package.directly_downloadable)
+      listItem.onclick = function() { selectListItem(listItem); };
+
+      // Add list item to list
+      packageList.appendChild(listItem);
+    }
+  }
+
+  async function selectListItem(listItem) {
+    let packageList = document.getElementById('package-list');
+    for (let i = 0 ; i < packageList.children.length ; i++) {
+      packageList.children[i].setAttribute("data-selected", "0");
+    }
+    listItem.setAttribute("data-selected", "1");
+
+    let a = document.getElementById('detailed-dl-a');
+    a.href = await getDownloadLink(listItem.getAttribute("package-id"), listItem.getAttribute("directlyDownloadable"));
+  }
+
+  async function downloadSelectedPackage() {
+    let packageList = document.getElementById('package-list');
+    for (let i = 0 ; i < packageList.children.length ; i++) {
+      if (packageList.children[i].getAttribute("data-selected") === '1') {
+        console.log(packageList.children[i].getAttribute("package-id"));
+        if (packageList.children[i].getAttribute("directlyDownloadable")) {
+          let downloadLink = await getDownloadLink(packageList.children[i].getAttribute("package-id"), true)
+          downloadSelectedListEntry(downloadLink)
+        }
+      }
+    }
+  }
+
+  function downloadSelectedListEntry(fileDownloadUrl) {
+    const request = new XMLHttpRequest();
+    request.open('GET', fileDownloadUrl, true);
+
+    request.onload = function() {
+      if (request.status === 200) {
+        const responseData     = JSON.parse(responseData.responseText);
+        const data             = responseData.result[0];
+        let realDownloadLink = data.direct_download_uri;
+        downloadFile1(realDownloadLink);
+      } else {
+        console.log(request.status);
+        // Reached the server, but it returned an error
+      }
+    }
+
+    request.onerror = function() {
+      console.error('An error occurred fetching the JSON from ' + url);
+    };
+
+    request.send();
+  }
+
+
+
+  // ******************** Common **********************************************
+  function getOperatingSystem() {
+    if (navigator.appVersion.indexOf("Win") != -1)   return "Windows";
+    if (navigator.appVersion.indexOf("Mac") != -1)   return "MacOS";
+    if (navigator.appVersion.indexOf("Linux") != -1) return "Linux";
+    if (navigator.appVersion.indexOf("X11") != -1)   return "Unix";
+    return "unknown";
+  }
+
+  function removeDropdownEntries(dropdown) {
+    while(dropdown.firstChild) {
+      dropdown.removeChild(dropdown.firstChild);
+    }
+  }
+
+  function uniqueOnly(value, index, self) { return self.indexOf(value) === index; }
+
+  function capitalize(text) { return text.charAt(0).toUpperCase() + text.slice(1); }
+
+  async function getDownloadLink(id, directly_downloadable) {
+    // Get current ephemeralId
+    const packagesUrl = baseUrl + '/disco/v2.0/packages/' + id + '?discovery_scope_id=build_of_openjdk&discovery_scope_id=public';
+    const packageJson  = await makeRequest("GET", packagesUrl);
+    let   responseData = JSON.parse(packageJson);
+    const j_package    = responseData.result[0];
+    const ephemeralId  = j_package.ephemeral_id;
+
+    // Get download link using the current ephemeralId
+    const ephemeralIdsUrl = baseUrl + '/disco/v2.0/ephemeral_ids/' + ephemeralId;
+    const packageInfoJson = await makeRequest("GET", ephemeralIdsUrl);
+    responseData = JSON.parse(packageInfoJson);
+    const packageInfo     = responseData.result[0];
+    return directly_downloadable ? packageInfo.direct_download_uri : packageInfo.download_site_uri;
+  }
+
+  async function getMajorVersion(which) {
+    const url           = baseUrl + '/disco/v2.0/major_versions/' + which;
+    let   major_version = await makeRequest("GET", url);
+    return major_version;
+  }
+
+  async function getPackages(url) {
+    let response = await makeRequest("GET", url);
+    return response;
+  }
+
+  function makeRequest(method, url) {
+    return new Promise(function (resolve, reject) {
+      let request = new XMLHttpRequest();
+      request.open(method, url);
+      request.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(request.response);
+        } else {
+          reject({
+                   status    : this.status,
+                   statusText: request.statusText
+                 });
+        }
+      };
+      request.onerror = function () {
+        reject({
+                 status    : this.status,
+                 statusText: request.statusText
+               });
+      };
+      request.send();
+    });
+  }
+
+  function normalizeJavaVersion(javaVersion) {
+    let version = javaVersion
+    if (version.indexOf('+') > -1) {
+      version = version.substring(0, version.indexOf('+'));
+    } else if (version.indexOf('-ea') > -1) {
+      version = version.substring(0, version.indexOf('-ea'));
+    }
+    return version;
+  }
+  async function getDownloadLink(id, directly_downloadable) {
+    // Get current ephemeralId
+    const packagesUrl = baseUrl + '/disco/v1.0/packages/' + id + '?discovery_scope_id=vscode';
+    const packageJson = await makeRequest("GET", packagesUrl);
+    const package     = JSON.parse(packageJson);
+    const ephemeralId = package.ephemeral_id;
+
+    // Get download link using the current ephemeralId
+    const ephemeralIdsUrl = baseUrl + '/disco/v1.0/ephemeral_ids/' + ephemeralId;
+    const packageInfoJson = await makeRequest("GET", ephemeralIdsUrl);
+    const packageInfo     = JSON.parse(packageInfoJson);
+    return directly_downloadable ? packageInfo.direct_download_uri : packageInfo.download_site_uri;
+  }
+
+
+  function command(cmd, callback) {
+    if (!cmd) {
+      return;
+    }
+    let args = Array.from(arguments);
+    if (typeof args[args.length - 1] === 'function') {
+      callback = args[args.length - 1];
+      args.length = args.length - 1;
+    } else {
+      callback = undefined;
+    }
+    const data = encodeURIComponent(JSON.stringify(args));
+    const url = `/command?data=${data}`;
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          if (callback) {
+            callback(JSON.parse(xhr.responseText));
+          }
+        } else {
+          if (callback) {
+            callback(null);
+          }
+        }
+      }
+    }
+    xhr.open('GET', url, true);
+    xhr.send();
+  }
+</script>
+</body>
+</html>
