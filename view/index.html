@@ -717,8 +717,8 @@
 
 
 
-  // ******************** Drill down by version JDK Selector ******************
-  async function initDrillDownJdkSelectors() {
+ // ******************** Drill down by version JDK Selector ******************
+ async function initDrillDownJdkSelectors() {
     let   maintainedMajorVersionsJson = await getMaintainedMajorVersions();
     const responseData                = JSON.parse(maintainedMajorVersionsJson);
     const maintainedMajorVersions     = responseData.result;
@@ -776,7 +776,7 @@
 
     let drillDownOS                = document.getElementById('drill-down-os');
     let drillDownOSDropdown        = document.getElementById('dd-os-dropdown');
-    
+
     let drillDownArc         = document.getElementById('drill-down-arc');
     let drillDownArcDropdown       = document.getElementById('dd-arc-dropdown');
 
@@ -803,7 +803,9 @@
       drillDownExtensionDropdown.removeChild(drillDownExtensionDropdown.firstChild);
     }
 
-    showHideDrillDownVersions();
+  if (selectedPackages == undefined) { return; }
+
+  showHideDrillDownVersions();
 
     for (let i = 0; i < selectedPackages.length; i++) {
       const option = document.createElement('option');
@@ -911,7 +913,7 @@
     let operatingSystem           = getOperatingSystem();
 
     if (checkBox.checked) {
-      let   majorVersionJson = await getMajorVersion(selectedDrillDownFeatureVersion);
+      let   majorVersionJson = await getMajorVersion(selectedDrillDownFeatureVersion, true);
       const responseData     = JSON.parse(majorVersionJson);
       const data             = responseData.result[0];
 
@@ -919,7 +921,11 @@
       if (data) {
         let versions = data.versions;
         for (let i = 0 ; i < versions.length ; i++) {
-          versionNumbersForSelectedMajorVersion.push(normalizeJavaVersion(versions[i]));
+          if (data.early_access_only) {
+            versionNumbersForSelectedMajorVersion.push(versions[i]);
+          } else {
+            versionNumbersForSelectedMajorVersion.push(normalizeJavaVersion(versions[i]));
+          }
         }
         versionNumbersForSelectedMajorVersion = versionNumbersForSelectedMajorVersion.filter(uniqueOnly);
       }
@@ -1022,7 +1028,7 @@
     let distro = drillDownDistrosDropdown.value.toLowerCase();
     if (distro == 'sap machine') { distro = 'sap_machine'; }
 
-    let nextMajorVersionJson = await getMajorVersion('latest_ea');
+    let nextMajorVersionJson = await getMajorVersion('latest_ea', false);
     let nextMajorVersion     = JSON.parse(nextMajorVersionJson);
     let nextFeatureVersion   = nextMajorVersion.major_version;
 
@@ -1033,9 +1039,19 @@
 
     let operatingSystemsForSelectedDistro = [];
     if (data.length > 0) {
-      let selectedJavaVersion = normalizeJavaVersion(drillDownVersionsDropdown.value);
+      let selectedJavaVersion;
+      if (nextMajorVersion.early_access_only) {
+        selectedJavaVersion = drillDownVersionsDropdown.value;
+      } else {
+        selectedJavaVersion = normalizeJavaVersion(drillDownVersionsDropdown.value);
+      }
       for (let i = 0 ; i < data.length ; i++) {
-        let javaVersion = normalizeJavaVersion(data[i].java_version);
+        let javaVersion;
+        if (nextMajorVersion.early_access_only) {
+          javaVersion = data[i].java_version;
+        } else {
+          javaVersion = normalizeJavaVersion(data[i].java_version);
+        }
         if (javaVersion === selectedJavaVersion) {
           operatingSystemsForSelectedDistro.push(data[i].operating_system);
         }
@@ -1066,7 +1082,7 @@
     drillDownArchitecturesDropdown.add(option);
     drillDownArchitectures.style.display = 'none';
   }
-  
+
   async function showHideDrillDownArchitectures() {
      if (selectedDrillDownFeatureVersion == null || selectedDrillDownFeatureVersion == undefined) { return; }
     let drillDownOperatingSystems         = document.getElementById('drill-down-os');
@@ -1081,20 +1097,25 @@
     let distro = drillDownDistrosDropdown.value.toLowerCase();
     if (distro == 'sap machine') { distro = 'sap_machine'; }
 
-    let nextMajorVersionJson = await getMajorVersion('latest_ea');
+    let nextMajorVersionJson = await getMajorVersion('latest_ea', false);
     let nextMajorVersion     = JSON.parse(nextMajorVersionJson);
     let nextFeatureVersion   = nextMajorVersion.major_version;
 
     let selectedJavaVersion  = drillDownVersionsDropdown.value;
 
-    let   packageUrl   = baseUrl + '/disco/v2.0/packages' + '?version=' + selectedJavaVersion + '&distro=' + distro + '&operating_system=' + drillDownOperatingSystemsDropdown.value + '&package_type=jdk' + '&release_status=ga' + '&release_status=ea&discovery_scope_id=public&discovery_scope_id=build_of_openjdk'; 
+    let   packageUrl   = baseUrl + '/disco/v2.0/packages' + '?version=' + selectedJavaVersion + '&distro=' + distro + '&operating_system=' + drillDownOperatingSystemsDropdown.value + '&package_type=jdk' + '&release_status=ga' + '&release_status=ea&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
     let   packagesJson = await getPackages(packageUrl);
     const responseData = JSON.parse(packagesJson);
     const data         = responseData.result;
 
     let architecturesForSelectedDistro = [];
     if (data.length > 0) {
-      let selectedJavaVersion = normalizeJavaVersion(drillDownVersionsDropdown.value);
+      let selectedJavaVersion;
+      if (nextMajorVersion.early_access_only) {
+        selectedJavaVersion = drillDownVersionsDropdown.value;
+      } else {
+        selectedJavaVersion = normalizeJavaVersion(drillDownVersionsDropdown.value);
+      }
       for (let i = 0 ; i < data.length ; i++) {
         let javaVersion = normalizeJavaVersion(data[i].java_version);
         if (javaVersion === selectedJavaVersion) {
@@ -1140,11 +1161,16 @@
     let distro = drillDownDistrosDropdown.value.toLowerCase();
     if (distro == 'sap machine') { distro = 'sap_machine'; }
 
-    let nextMajorVersionJson = await getMajorVersion('latest_ea');
+    let nextMajorVersionJson = await getMajorVersion('latest_ea', false);
     let nextMajorVersion     = JSON.parse(nextMajorVersionJson);
     let nextFeatureVersion   = nextMajorVersion.major_version;
 
-    let selectedJavaVersion  = drillDownVersionsDropdown.value;
+    let selectedJavaVersion;
+    if (nextMajorVersion.early_access_only) {
+      selectedJavaVersion = drillDownVersionsDropdown.value;
+    } else {
+      selectedJavaVersion = normalizeJavaVersion(drillDownVersionsDropdown.value);
+    }
 
     let   packageUrl   = baseUrl + '/disco/v2.0/packages' + '?version=' + selectedJavaVersion + '&distro=' + distro + '&operating_system=' + drillDownOperatingSystemsDropdown.value + '&architecture=' + drillDownArchitecturesDropdown.value + '&package_type=jdk' + '&release_status=ga' + '&release_status=ea&discovery_scope_id=public&discovery_scope_id=build_of_openjdk';
     let packagesJson = await getPackages(packageUrl);
@@ -1154,8 +1180,14 @@
     let archiveTypesForSelectedDistro = [];
     if (data.length > 0) {
       for (let i = 0 ; i < data.length ; i++) {
-        if (normalizeJavaVersion(data[i].java_version) === selectedJavaVersion) {
-          archiveTypesForSelectedDistro.push(data[i].archive_type);
+        if (nextMajorVersion.early_access_only) {
+          if (data[i].java_version === selectedJavaVersion) {
+            archiveTypesForSelectedDistro.push(data[i].archive_type);
+          }
+        } else {
+          if (normalizeJavaVersion(data[i].java_version) === selectedJavaVersion) {
+            archiveTypesForSelectedDistro.push(data[i].archive_type);
+          }  
         }
       }
       archiveTypesForSelectedDistro = archiveTypesForSelectedDistro.filter(uniqueOnly);
@@ -1192,10 +1224,10 @@
     let   packagesJson = await getPackages(packageUrl);
     const responseData = JSON.parse(packagesJson);
     const data         = responseData.result;
-  
+
     if (data.length > 0) {
       for (let i = 0 ; i < data.length ; i++) {
-        if (normalizeJavaVersion(data[i].java_version) === drillDownVersionsDropdown.value && data[i].archive_type === drillDownArchiveTypesDropdown.value) {
+        if (data[i].java_version === drillDownVersionsDropdown.value && data[i].archive_type === drillDownArchiveTypesDropdown.value) {
           document.getElementById("dd-download-label").setAttribute("package-id", data[i].id)
           document.getElementById("dd-download-area").setAttribute("data-status", "0");
           document.getElementById("dd-download-label").setAttribute("data-status", "0");
@@ -1218,7 +1250,7 @@
   let downloadLink = await getDownloadLink(packageId, true);
   if (downloadLink != undefined) {
     document.getElementById('dd-dl-frame').src = downloadLink;
-  } 
+  }
 }
 
 
@@ -1312,7 +1344,7 @@
     while(drillDownDistributionOperatingSystemsDropdown.firstChild) {
       drillDownDistributionOperatingSystemsDropdown.removeChild(drillDownDistributionOperatingSystemsDropdown.firstChild);
     }
-    
+
     document.getElementById('drill-down-distribution-architectures').style.display = 'none';
     let drillDownDistributionArchitecturesDropdown = document.getElementById('ddd-arc-dropdown');
     while(drillDownDistributionArchitecturesDropdown.firstChild) {
@@ -1371,7 +1403,8 @@
     drillDownDistributionVersionsDropdown.add(option);
     for (let i = 0 ; i < versions.length ; i++) {
       let version  = versions[i];
-      if (version.split('.')[0] == selectedFeatureMajorVersion) {
+      let normJavaVersion = normalizeJavaVersion(version);
+      if (normJavaVersion.split('.')[0] == selectedFeatureMajorVersion) {
         option       = document.createElement('option');
         option.id    = version;
         option.text  = version;
@@ -1490,7 +1523,7 @@
 
   async function showHideDrillDownDistributionArchiveTypes() {
     if (null == selectedDrillDownDistribution || undefined == selectedDrillDownDistribution) { return; }
-    
+
     let selectedVersion                               = document.getElementById('ddd-version-dropdown').value;
     let drillDownDistributionOperatingSystemsDropdown = document.getElementById('ddd-operating-system-dropdown');
 
@@ -1541,7 +1574,7 @@
     let packagesJson = await getPackages(packageUrl);
     const responseData = JSON.parse(packagesJson);
     const data         = responseData.result;
-    
+
     if (data.length > 0) {
       for (let i = 0 ; i < data.length ; i++) {
         if (data[i].java_version.toString() == selectedVersion.toString() && data[i].archive_type.toString() == selectedExtension.toString()) {
@@ -1590,7 +1623,7 @@
       if (request.status === 200) {
         const responseData = JSON.parse(request.responseText);
         const data         = responseData.result;
-      
+
         let option;
         for (let i = 0; i < data.length; i++) {
           option = document.createElement('option');
@@ -1677,7 +1710,7 @@
     defaultOption.text  = 'Architecture';
     defaultOption.value = '-';
 
-    architectureDropdown.add(defaultOption);    
+    architectureDropdown.add(defaultOption);
 
     let architectures = [ 'aarch64', 'aarch32', 'ia64', 'mips', 'ppc', 'ppc64', 'ppc64le', 'riscv64', 's390x', 'sparc', 'sparcv9', 'x64', 'x32' ];
 
@@ -1847,7 +1880,6 @@
     let packageList = document.getElementById('package-list');
     for (let i = 0 ; i < packageList.children.length ; i++) {
       if (packageList.children[i].getAttribute("data-selected") === '1') {
-        console.log(packageList.children[i].getAttribute("package-id"));
         if (packageList.children[i].getAttribute("directlyDownloadable")) {
           let downloadLink = await getDownloadLink(packageList.children[i].getAttribute("package-id"), true)
           downloadSelectedListEntry(downloadLink)
@@ -1916,8 +1948,8 @@
     return directly_downloadable ? packageInfo.direct_download_uri : packageInfo.download_site_uri;
   }
 
-  async function getMajorVersion(which) {
-    const url           = baseUrl + '/disco/v2.0/major_versions/' + which;
+  async function getMajorVersion(which, include_ea) {
+    const url           = baseUrl + '/disco/v2.0/major_versions/' + which + (include_ea ? '/ea' : '');
     let   major_version = await makeRequest("GET", url);
     return major_version;
   }
@@ -1955,25 +1987,14 @@
     let version = javaVersion
     if (version.indexOf('+') > -1) {
       version = version.substring(0, version.indexOf('+'));
+      if (version.indexOf('-ea') > -1) {
+        version = version.substring(0, version.indexOf('-ea'));
+      }
     } else if (version.indexOf('-ea') > -1) {
       version = version.substring(0, version.indexOf('-ea'));
     }
     return version;
   }
-  async function getDownloadLink(id, directly_downloadable) {
-    // Get current ephemeralId
-    const packagesUrl = baseUrl + '/disco/v1.0/packages/' + id + '?discovery_scope_id=vscode';
-    const packageJson = await makeRequest("GET", packagesUrl);
-    const package     = JSON.parse(packageJson);
-    const ephemeralId = package.ephemeral_id;
-
-    // Get download link using the current ephemeralId
-    const ephemeralIdsUrl = baseUrl + '/disco/v1.0/ephemeral_ids/' + ephemeralId;
-    const packageInfoJson = await makeRequest("GET", ephemeralIdsUrl);
-    const packageInfo     = JSON.parse(packageInfoJson);
-    return directly_downloadable ? packageInfo.direct_download_uri : packageInfo.download_site_uri;
-  }
-
 
   function command(cmd, callback) {
     if (!cmd) {
