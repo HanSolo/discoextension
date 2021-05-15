@@ -2,7 +2,7 @@
     "name": "disco",
     "displayName": "disco",
     "description": "",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "publisher": "GerritGrunwald",
     "engines": {
         "vscode": "^1.23.0"
