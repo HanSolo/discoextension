@@ -736,7 +736,11 @@
       input.id       = 'dd-jdk-' + r.major_version;
       input.name     = 'JDK';
       input.value    = r.major_version;
-      input.onchange = function() { updateDrillDownDownloadArea(document.getElementById('dd-jdk-' + r.major_version).value); };
+      input.onchange = function() { 
+        let a = document.getElementById('ddd-dl-a');
+        a.removeAttribute("href");
+        updateDrillDownDownloadArea(document.getElementById('dd-jdk-' + r.major_version).value); 
+      };
       div.appendChild(input);
 
       var label = document.createElement('label');
