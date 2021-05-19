@@ -1,4 +1,4 @@
-# foojay JDK discovery api extension
+# Foojay JDK Discovery API extension
 
 A Visual Studio Code extension that gives the user the ability to select and download a JDK from different distributions.
 
